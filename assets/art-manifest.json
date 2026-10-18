@@ -1,0 +1,426 @@
+{
+  "generator": "imagegen",
+  "version": "1.1.0",
+  "sprites": {
+    "columns": 3,
+    "rows": 4,
+    "cellWidth": 128,
+    "cellHeight": 128,
+    "directions": [
+      "south",
+      "west",
+      "east",
+      "north"
+    ]
+  },
+  "assets": [
+    {
+      "path": "assets/scenes/bridge.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 153398,
+      "sha256": "e44e967098429b45ebec3014fd020d2198c9d65120692dd44c5a0cf4efcf795a",
+      "sourceBytes": 3227380
+    },
+    {
+      "path": "assets/thumbs/bridge.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 16278,
+      "sha256": "d97e28ad6a0849e264c32fcee6d1d14faf7f44aa470c3ffd55c64cc58a90a4ba",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/observatory.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 171840,
+      "sha256": "d1520bc5cd640fb5479245b148f3cf4fc3073191e24455fb7631729ac833ccdc",
+      "sourceBytes": 3351878
+    },
+    {
+      "path": "assets/thumbs/observatory.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 18126,
+      "sha256": "021dbcc52ddee2041c06137be0ad07b24ec1255c8be6ad66abbce4072b84e46d",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/chaos.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 170670,
+      "sha256": "914ebf8b99786302757e80d5db92a9f6b26741767510d48b6e4ac7eba20dadcd",
+      "sourceBytes": 3291494
+    },
+    {
+      "path": "assets/thumbs/chaos.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 18012,
+      "sha256": "add1263d79519c2c4c697cc886f9ae3494156649d2444d1173317b152ec87dee",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/office.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 125992,
+      "sha256": "c59138629aab3904c722653465a3592a2466505bbb4082a645b7f89102440443",
+      "sourceBytes": 2737638
+    },
+    {
+      "path": "assets/thumbs/office.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 15526,
+      "sha256": "a0655ceafd64f3374913e2750fe09191f36474ccf4719c1be719262ccb18fee8",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/restaurant.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 126370,
+      "sha256": "e76a051a7741b11712d0bce536b56f11a6255a668c9d6d96dd6955616ce64304",
+      "sourceBytes": 2630755
+    },
+    {
+      "path": "assets/thumbs/restaurant.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 14600,
+      "sha256": "e5a2632425bcb43e78e53ffcd5e1c64b122ec5a36c127afe28ad7d6ebadde5c5",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/archive.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 160372,
+      "sha256": "222993b4a25ee6e235311c57690ae16a7d842efb7778d60478d32c476d84925d",
+      "sourceBytes": 3036477
+    },
+    {
+      "path": "assets/thumbs/archive.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 16956,
+      "sha256": "f3f491fafe3c40efa906ae0654fbdd0a5c40dcba83c02851278b677c8d8b8287",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/lounge.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 139904,
+      "sha256": "960f3b6c3843f2ae452c04e0a1738291cbb9472847c30d11f1393730f03914d2",
+      "sourceBytes": 2883304
+    },
+    {
+      "path": "assets/thumbs/lounge.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 16656,
+      "sha256": "13bf19794bef683e8f68c9bca4d2ea1f88bec01c503f8f77e5b5b9dd7c27de72",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/garden.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 202346,
+      "sha256": "95d44c998d7561a4bb65b70aac26e297b28a17d9bb5741f931670f6318f2aa97",
+      "sourceBytes": 3705387
+    },
+    {
+      "path": "assets/thumbs/garden.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 20186,
+      "sha256": "7d52926bac871360d73344a1ebd43f9bae23f142edd9656232c633c20e524628",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/training.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 145056,
+      "sha256": "866763408d1934897c10e8fc839b26c2438b26fc32a04f08f74565f3e46a6e3f",
+      "sourceBytes": 2973323
+    },
+    {
+      "path": "assets/thumbs/training.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 16556,
+      "sha256": "c07ea7eae7c6210d01e9d2a64369fc46ef3a855df33973e966450654a0f27cd1",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/earth.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 181056,
+      "sha256": "37178d6448b6b5527baba80e845a1fd0d3291a156a1ea59b112dbe590f177fa6",
+      "sourceBytes": 3423580
+    },
+    {
+      "path": "assets/thumbs/earth.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 18256,
+      "sha256": "ed2abc63fd7671ff1f8da670356d822000244235f0fdefb543cd1d2c6d459f39",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/alchemy.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 167914,
+      "sha256": "3f4ec77a5cce85ee6dc62cb719a62f489353bedb678fd6c4d73b3937336c6eed",
+      "sourceBytes": 3170945
+    },
+    {
+      "path": "assets/thumbs/alchemy.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 17840,
+      "sha256": "d27538e59865b4a29123f33ea9640743f6def5cbf5e930ac3b678e0ee2da5ebb",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/security.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 125432,
+      "sha256": "5fe3a8f13e0661b43ba936d8b8f8195528906d018702e968cf9f28f207404c53",
+      "sourceBytes": 2806382
+    },
+    {
+      "path": "assets/thumbs/security.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 14142,
+      "sha256": "d432c4fa73cf5d150f29a115d11ad602b3e208f03fbc789021c52d8d856fac94",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/workshop.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 137178,
+      "sha256": "0d68bcaeef7dff32da0a5a2e690642089088b8530a77fde12b5ef43ac1af7d60",
+      "sourceBytes": 2643356
+    },
+    {
+      "path": "assets/thumbs/workshop.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 17098,
+      "sha256": "a3a40bac021953c73f7b9f1664448c458f6e533426827913f4eaf5ba6912bbab",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/onsen.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 166306,
+      "sha256": "aed5c658d9e2692cfbd89a51b1abbee1d7dff221461d9759898fee71c36d67f9",
+      "sourceBytes": 3223296
+    },
+    {
+      "path": "assets/thumbs/onsen.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 17800,
+      "sha256": "20bd504fe13dc3545d57f70037fa0fbc7589e3c71fa7ca365a30149c7eb117d0",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/scenes/strategy.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 145162,
+      "sha256": "c5fbb305ade8873b339f5297b3ac390553fbcf4a2bd6858e78d8e2bb4c23a5f8",
+      "sourceBytes": 2966237
+    },
+    {
+      "path": "assets/thumbs/strategy.webp",
+      "width": 320,
+      "height": 180,
+      "bytes": 15716,
+      "sha256": "e9d5cea7a1d2b272439f162642d8dc65a8eec52ff19f1e1bea40ba8b1544fe8e",
+      "sourceBytes": null
+    },
+    {
+      "path": "assets/backgrounds/nebula.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 124504,
+      "sha256": "6a443a2321fb3d8968003eeb94ba44b3e3d6c42893e39a2bd40a93732a39ee7a",
+      "sourceBytes": 2582467
+    },
+    {
+      "path": "assets/backgrounds/ring.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 98974,
+      "sha256": "66ad42061b8c80150bc69f456fddb15bdf7fe6a460dedeacd0b117c76b216932",
+      "sourceBytes": 2326045
+    },
+    {
+      "path": "assets/backgrounds/aurora.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 99298,
+      "sha256": "9f4ef7604a8631eb1e1ad18f290fed32ead33b591b0201514d63238f9ebefae0",
+      "sourceBytes": 2377863
+    },
+    {
+      "path": "assets/backgrounds/meteor.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 90262,
+      "sha256": "81681b09636c2069eabedfccdacb57b71929aa8f9d38790e391886f111168bc2",
+      "sourceBytes": 2297281
+    },
+    {
+      "path": "assets/backgrounds/cluster.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 84316,
+      "sha256": "16c1b033b3fb938e4b3f1875c0ab42cbfacce05c6299405d495559cd9aeb26bb",
+      "sourceBytes": 2194432
+    },
+    {
+      "path": "assets/backgrounds/gateway.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 145548,
+      "sha256": "45304b0c3eafdf06ba3f2671c28acb61b5e3ee2bb34d3a1045ed8cc9e72fb68b",
+      "sourceBytes": 2645627
+    },
+    {
+      "path": "assets/backgrounds/blackhole.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 76094,
+      "sha256": "c2847da789add0c900a8f285a748fbf8aebfdf71c0c636e3d30aeac622370373",
+      "sourceBytes": 2203025
+    },
+    {
+      "path": "assets/ship.webp",
+      "width": 960,
+      "height": 540,
+      "bytes": 143292,
+      "sha256": "0922febfb52b663a69681500ddd324987102b78080f6ec1c0577ef285925277a",
+      "sourceBytes": 1571548
+    },
+    {
+      "path": "assets/backgrounds/planet.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 106844,
+      "sha256": "ce5947165246cc65d62e4500bdc8ec056bf7516f54b75bba3b103976fa31e055",
+      "sourceBytes": 2405061
+    },
+    {
+      "path": "assets/backgrounds/galaxy.webp",
+      "width": 1280,
+      "height": 720,
+      "bytes": 97756,
+      "sha256": "350375a26fa0b0cd0f653b7591636429339a38f09788567ac42a50c22e1d9b69",
+      "sourceBytes": 2316968
+    },
+    {
+      "path": "assets/sprites/e.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 65970,
+      "sha256": "689f4fa4883de1ef7253b16b6fe3bfeb6d6e89cc8c3860017bcbee6bae7fd86f",
+      "sourceBytes": 1307687
+    },
+    {
+      "path": "assets/sprites/seoah.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 75042,
+      "sha256": "aaf8b11bfe38c1327679461cb4c6efb29fe70c616daa64ff058b8d57ff859406",
+      "sourceBytes": 1533493
+    },
+    {
+      "path": "assets/sprites/skuld.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 99366,
+      "sha256": "7241e165a0924076d67ca4a33291c68db6a0e8a11e89c23053759853f6a2779e",
+      "sourceBytes": 1857267
+    },
+    {
+      "path": "assets/sprites/myr.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 104084,
+      "sha256": "a16367683587b39fcf16727a685adedbb319d9ad55daa03faa3c656ccfc97656",
+      "sourceBytes": 2311933
+    },
+    {
+      "path": "assets/sprites/2b.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 60626,
+      "sha256": "7cf6c38292cf95f4dee9875571064f08362a7c87a6a32f46a08c95ae4d70d117",
+      "sourceBytes": 1287513
+    },
+    {
+      "path": "assets/sprites/marie.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 72032,
+      "sha256": "5828ba115c63e47e83bc9b67c4d37ee4cbd16b4dceeccf4f7e10d81969682045",
+      "sourceBytes": 1478455
+    },
+    {
+      "path": "assets/sprites/urd.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 104176,
+      "sha256": "d81e6fe953e3d7086a57d95169e81c473d284aeaa38568979591a928c3b13cf8",
+      "sourceBytes": 2283573
+    },
+    {
+      "path": "assets/sprites/yor.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 66358,
+      "sha256": "2d860a69755af7ad8b482678a402fe6750480ac82761180bbf89cd87c5b1b86d",
+      "sourceBytes": 1299144
+    },
+    {
+      "path": "assets/sprites/serena.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 94944,
+      "sha256": "56a29f6510033bea9662eb1f9fc0443b876fd3911ab273c78bea766ba21862ef",
+      "sourceBytes": 1848853
+    },
+    {
+      "path": "assets/sprites/amelia.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 87068,
+      "sha256": "7925f255b1ab101c0d5b9ebf63cf9372dc125d0c247a63169bd08aa63a27967f",
+      "sourceBytes": 1678417
+    },
+    {
+      "path": "assets/sprites/wanda.webp",
+      "width": 384,
+      "height": 512,
+      "bytes": 62374,
+      "sha256": "24bce4a36305a3cced89c6b41fd0703a80368c0bf997d0aa92bef6356836df58",
+      "sourceBytes": 1180448
+    }
+  ]
+}

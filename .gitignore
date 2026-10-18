@@ -1,0 +1,4 @@
+node_modules/
+work/
+art-paths.json
+__pycache__/
