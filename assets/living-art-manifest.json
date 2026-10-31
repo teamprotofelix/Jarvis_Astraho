@@ -64,6 +64,114 @@
       "sha256": "f803ee162cbca4bc174bdcaad0a101c85e2def81d8f993c9f8f3cf648b741131",
       "format": "webp",
       "alpha": false
+    },
+    {
+      "path": "assets/props/tea-cup.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 3458,
+      "sha256": "b84ce42c48db1095b5aaad6f8da79d7c18ae6ec4b0d8ef0c46ebd256c306912b",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/holo-console.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 3042,
+      "sha256": "a5a7cdeb3c860e0d105805c6f64160b3a05413391bcbe3c90d3352bc82b4b74c",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/plant-care.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 4534,
+      "sha256": "6eeee5e5e7c17a3416148475905ff939c5e6a6f5336a4f9eff35c39d9d487895",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/wrench-repair.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 2608,
+      "sha256": "e31664de9a1a1918b136ac8c9b039c8e42d4f6e1a3c592a22cc623adb0cd4f0c",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/archive-book.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 3788,
+      "sha256": "6c885c1491d6d2fdc11ee2ad588cd6cda8ba3e58c9f81bae05f55dc9803d1199",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/security-shield.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 3498,
+      "sha256": "6af91e76f07150afe878544ac86e178703d771a997d9c34950349874a0b3c5fd",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/repair-drone.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 4192,
+      "sha256": "daa5dbe181100b1d41e42929d866014d9f56a313cf840f0de6fb057958c18687",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/worldtree-spark.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 4536,
+      "sha256": "ec4d74351f1f1d7afe416f8e1853996cba9b356a2cd6d1e3216a51cb37e9a372",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/conversation-bubble.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 2942,
+      "sha256": "996513e7d971b8fb1aeaf75be778d232dc0cc872efbb163ddfc22ee1b63e2f7f",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/props/rest-chair.webp",
+      "width": 256,
+      "height": 256,
+      "bytes": 2018,
+      "sha256": "e6ff9d2c61453778986cd45c5b254bce604062e095d6585c155ff8654f3ce77a",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/fx/worldtree-pulse-atlas.webp",
+      "width": 1152,
+      "height": 192,
+      "bytes": 6222,
+      "sha256": "92c5270388d45834265cb7675e5bf46a50287be653302065b3abf9b792d126eb",
+      "format": "webp",
+      "alpha": true
+    },
+    {
+      "path": "assets/fx/sensor-scan-atlas.webp",
+      "width": 1152,
+      "height": 192,
+      "bytes": 7816,
+      "sha256": "5789dd0b200c07c5efaa92b3d204bda522defc5d28b228bbf4c2817b4e93dc6c",
+      "format": "webp",
+      "alpha": true
     }
   ]
 }
