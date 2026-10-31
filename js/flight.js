@@ -19,5 +19,5 @@ export function createFlight(canvas,ship,onUpdate){
  function input(key,down){if(down)keys.add(key.toLowerCase());else keys.delete(key.toLowerCase());}
  function advance(dt){if(paused)return;const before=model.sector;model.step(dt,{left:keys.has('arrowleft')||keys.has('a'),right:keys.has('arrowright')||keys.has('d'),up:keys.has('arrowup')||keys.has('w'),down:keys.has('arrowdown')||keys.has('s')});if(before!==model.sector){loadScene(model.sector);loadScene((model.sector+1)%landscapes.length);}draw();report();}
  loadScene(0);resize();report();
- return {resize,advance,input,clear,setManual,pause(value){paused=value;if(value)clear();},next(){model.next();loadScene(model.sector);report();draw();},get manual(){return model.manual;},get sector(){return model.sector;}};
+ return {resize,advance,input,clear,setManual,snapshot:()=>model.snapshot(),restore(state){clear();model.restore(state);loadScene(model.sector);report();draw();},pause(value){paused=value;if(value)clear();},next(){model.next();loadScene(model.sector);report();draw();},get manual(){return model.manual;},get sector(){return model.sector;}};
 }

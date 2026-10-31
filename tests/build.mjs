@@ -7,7 +7,8 @@ const root=new URL('../',import.meta.url),read=p=>readFileSync(new URL(p,root),'
 const html=read('index.html'),main=read('js/main.js');
 for(const match of main.matchAll(/\$\('#([\w-]+)'\)/g))assert.ok((html+main).includes(`id="${match[1]}"`),`Missing DOM id: ${match[1]}`);
 for(const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g))assert.ok(existsSync(new URL(match[1],root)),`HTML asset: ${match[1]}`);
-for(const file of readdirSync(new URL('js',root)))for(const match of read('js/'+file).matchAll(/from ['"](\.[^'"]+)['"]/g))assert.ok(existsSync(new URL(match[1],new URL('js/'+file,root))),`Import: ${file} ${match[1]}`);
+function scripts(dir){return readdirSync(new URL(dir,root),{withFileTypes:true}).flatMap(e=>e.isDirectory()?scripts(dir+'/'+e.name):[dir+'/'+e.name]);}
+for(const file of scripts('js'))for(const match of read(file).matchAll(/from ['"](\.[^'"]+)['"]/g))assert.ok(existsSync(new URL(match[1],new URL(file,root))),`Import: ${file} ${match[1]}`);
 for(const src of [...modules.map(m=>sceneSrc(m.id)),...modules.map(m=>thumbSrc(m.id)),...crew.map(c=>spriteSrc(c.id)),...landscapes.map((_,i)=>landscapeSrc(i))])assert.ok(existsSync(new URL(src,root)),src);
 const context={URL,self:{registration:{scope:'https://example.org/subpath/'},addEventListener(){}}};vm.createContext(context);vm.runInContext(read('sw.js')+';this.files=STATIC',context);
 for(const file of context.files)assert.ok(existsSync(new URL(file,root)),`Offline cache asset: ${file}`);
