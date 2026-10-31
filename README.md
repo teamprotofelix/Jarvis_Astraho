@@ -22,7 +22,7 @@ Node 20 이상. 런타임 의존성과 빌드 과정이 필요 없는 정적 사
 
 ## 배포
 
-GitHub Pages의 **Deploy from a branch → main → /(root)** 를 사용합니다. `CNAME`은 기존 `astraho.moip.ai.kr`을 유지합니다. 모든 자산 경로는 상대 경로여서 저장소 하위 경로에서도 동작합니다. `main` 변경과 실제 Pages 게시 완료 여부는 구분하여 확인해야 합니다. 이번 요청에서는 사용자가 `main` 직접 반영을 명시적으로 승인했습니다.
+GitHub Pages의 **Deploy from a branch → main → /(root)** 를 사용합니다. `CNAME`은 기존 `astraho.moip.ai.kr`을 유지합니다. 모든 자산 경로는 상대 경로여서 저장소 하위 경로에서도 동작합니다. `main` 변경과 실제 Pages 게시 완료 여부는 구분하여 확인해야 합니다. 변경은 기능 브랜치와 PR로 검토합니다. PR0~PR3 작업에서는 main 병합·운영 배포·CNAME 변경을 수행하지 않습니다.
 
 ## 이미지
 
