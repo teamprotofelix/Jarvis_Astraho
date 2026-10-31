@@ -1,0 +1,7 @@
+// The database name includes the application directory, so sibling Pages do not share saves.
+export function createIndexedDBStorage(indexedDB=globalThis.indexedDB,scope=new URL('./',globalThis.location?.href||'https://local.invalid/').pathname){
+ let connection;
+ async function open(){if(!indexedDB)throw Error('IndexedDB를 사용할 수 없습니다');if(connection)return connection;connection=await new Promise((resolve,reject)=>{const r=indexedDB.open(`astraho-save:${scope}`,1);const timer=setTimeout(()=>reject(Error('저장소 연결 시간 초과')),4000);r.onupgradeneeded=()=>r.result.createObjectStore('state');r.onsuccess=()=>{clearTimeout(timer);r.result.onversionchange=()=>{r.result.close();connection=null;};resolve(r.result);};r.onerror=()=>{clearTimeout(timer);reject(r.error);};r.onblocked=()=>{clearTimeout(timer);reject(Error('다른 탭이 저장소를 사용 중입니다'));};});return connection;}
+ async function transaction(mode,run){const db=await open();return new Promise((resolve,reject)=>{const tx=db.transaction('state',mode),store=tx.objectStore('state');let result;tx.oncomplete=()=>resolve(result);tx.onabort=tx.onerror=()=>reject(tx.error||Error('저장 트랜잭션 실패'));run(store,v=>result=v);});}
+ return {get(key='current'){return transaction('readonly',(s,set)=>{const r=s.get(key);r.onsuccess=()=>set(r.result??null);});},put(value,{backup=false}={}){return transaction('readwrite',s=>{if(backup){const r=s.get('current');r.onsuccess=()=>{if(r.result!=null)s.put(r.result,'before-import');};}s.put(value,'current');});}};
+}

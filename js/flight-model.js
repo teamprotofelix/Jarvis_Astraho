@@ -1,6 +1,8 @@
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export class FlightModel{
  constructor(random=Math.random){this.random=random;this.width=960;this.height=500;this.x=.28;this.y=.52;this.tilt=0;this.time=0;this.sectorTime=0;this.sector=0;this.manual=false;this.lit=0;this.shield=100;this.collisions=0;this.invincible=0;this.distance=0;this.objects=[];this.spawnTime=0;this.message='자동 조종이 안전 항로를 유지합니다.';this.spawn('light',.75,.52);}
+ snapshot(){const {random,width,height,...state}=this;return structuredClone(state);}
+ restore(state){Object.assign(this,structuredClone(state));this.bound();}
  get shipWidth(){return clamp(this.width*.24,90,240);}
  setBounds(width,height){this.width=Math.max(1,width);this.height=Math.max(1,height);this.bound();}
  bound(){const mx=(this.shipWidth*.5+8)/this.width,my=(this.shipWidth*.18+8)/this.height;this.x=clamp(this.x,mx,1-mx);this.y=clamp(this.y,my,1-my);}

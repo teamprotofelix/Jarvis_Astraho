@@ -27,6 +27,12 @@ export function createCrewSimulation(){
    if(!m.path.length){m.room=m.target;m.phase='활동';m.direction=0;m.pause=8+(m.routeIndex*7+m.data.id.length*3)%15;m.activityIndex=(m.activityIndex+1)%3;record(m,`${m.data.name} · ${rooms.get(m.room).activity[m.activityIndex]}`);if(m.queued){const target=m.queued;m.queued=null;travel(m,target);}}
   }
  }
- return {members,events,update,requestTravel,get elapsed(){return elapsed;},getOccupants:id=>members.filter(m=>m.phase!=='이동'&&m.room===id),getDisplayRoom:m=>m.phase==='이동'?`${rooms.get(m.room).name} → ${rooms.get(m.target).name}`:rooms.get(m.room).name,getActivity:m=>m.phase==='이동'?'복도 이동 중':rooms.get(m.room).activity[m.activityIndex]};
+ function snapshot(){return {elapsed,serial,members:members.map(({data,...m})=>({id:data.id,...structuredClone(m)})),events:structuredClone(events)};}
+ function restore(state){elapsed=state.elapsed;serial=state.serial;events.splice(0,events.length,...structuredClone(state.events));for(const saved of state.members){const m=members.find(m=>m.data.id===saved.id);if(!m)continue;const {id,...fields}=saved;Object.assign(m,structuredClone(fields));
+  const full=routeBetween(m.room,m.target),suffix=full.slice(full.length-m.path.length);let safe=m.phase==='이동'&&m.path.length>0&&JSON.stringify(suffix)===JSON.stringify(m.path);
+  if(safe){const previous=full.length===m.path.length?coords(m.room):full[full.length-m.path.length-1],next=m.path[0];safe=Math.abs((next.x-previous.x)*(m.pos.y-previous.y)-(next.y-previous.y)*(m.pos.x-previous.x))<.01&&m.pos.x>=Math.min(previous.x,next.x)&&m.pos.x<=Math.max(previous.x,next.x)&&m.pos.y>=Math.min(previous.y,next.y)&&m.pos.y<=Math.max(previous.y,next.y);}
+  if(m.phase==='이동'&&!safe){m.pos=coords(m.room);m.target=m.room;m.path=[];m.phase='활동';m.pause=1;record(m,`${m.data.name} · 저장 경로를 마지막 안전 공간으로 복구`);}
+ }}
+ return {members,events,update,requestTravel,snapshot,restore,get elapsed(){return elapsed;},getOccupants:id=>members.filter(m=>m.phase!=='이동'&&m.room===id),getDisplayRoom:m=>m.phase==='이동'?`${rooms.get(m.room).name} → ${rooms.get(m.target).name}`:rooms.get(m.room).name,getActivity:m=>m.phase==='이동'?'복도 이동 중':rooms.get(m.room).activity[m.activityIndex]};
 }
 export const canonNote='위치·시간·상태와 새로운 일화는 아스트라호의 공개용 창작 시뮬레이션입니다.';
