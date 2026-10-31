@@ -1,3 +1,4 @@
+import {createLivingView,roomScene} from './views/living-view.js';
 import {createGameState,parseSave,MAX_SAVE_BYTES} from './state/game-state.js';
 import {createIndexedDBStorage} from './state/storage.js';
 import {createPersistence} from './state/persistence.js';
@@ -7,6 +8,8 @@ import {createFlight} from './flight.js';
 const $=s=>document.querySelector(s);
 const roomMap=new Map(modules.map(m=>[m.id,m]));
 const sim=createCrewSimulation();
+const living=createLivingView($('#living-root'));
+let quality='high';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let loading=true,paused=reduced,blurred=false,last=0,lastUI=0,activeView='map',returnFocus=null,selected='e',following=false,zoom=1,speed=1,currentRoom=null,talkIndex=0,flightVisible=false;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -22,6 +25,8 @@ function buildMap(){
  $('#statuses').innerHTML=[['세계수 공명','안정'],['항로 분석','관측 중'],['생활 환경','정상']].map(([label,value])=>`<div class="status-row"><div><span>${label}</span><b>${value}</b></div><div class="status-track"><i style="width:96%;background:var(--mint)"></i></div></div>`).join('');
 }
 function updateMap(){
+ living.render(sim,{selected,zoom,motion:!paused&&!blurred&&!document.hidden&&!reduced,following});
+ $('#living-selection').textContent=member().data.name+' · '+sim.getDisplayRoom(member())+' · '+sim.getActivity(member());
  for(const m of sim.members){const el=$(`.crew-sprite[data-person="${m.data.id}"]`);const index=crew.indexOf(m.data),idle=m.phase!=='이동';
   // Spread co-located residents without changing navigation coordinates.
   const offset=idle?(index%3-1)*21:0;
@@ -40,21 +45,22 @@ function selectPerson(id){if(!crew.some(p=>p.id===id))return;selected=id;talkInd
  $('#observer-title').textContent=p.name;$('#observer-copy').textContent=p.line;$('#person-role').textContent=p.role;$('#portrait').innerHTML=sprite(id);$('#talk-response').textContent='';
  document.querySelectorAll('.crew-pill').forEach(el=>{const on=el.dataset.person===id;el.classList.toggle('selected',on);el.setAttribute('aria-pressed',String(on));});updateMap();
 }
-function centerPerson(){const m=member(),scroll=$('#map-scroll'),stage=$('#map-stage');scroll.scrollLeft=(m.pos.x/1200)*stage.clientWidth-scroll.clientWidth/2;}
-function setFollowing(value){following=value;$('#follow-person').classList.toggle('active',value);$('#follow-person').setAttribute('aria-pressed',String(value));$('#follow-person').textContent=value?'따라가기 중':'따라가기';if(value)centerPerson();}
+function centerPerson(){const m=member(),scroll=activeView==='living'?$('#living-scroll'):$('#map-scroll'),stage=activeView==='living'?$('#living-stage'):$('#map-stage');if(!scroll||!stage)return;scroll.scrollLeft=(m.pos.x/1200)*stage.clientWidth-scroll.clientWidth/2;}
+function setFollowing(value){following=value;$('#living-follow').setAttribute('aria-pressed',String(value));$('#follow-person').classList.toggle('active',value);$('#follow-person').setAttribute('aria-pressed',String(value));$('#follow-person').textContent=value?'따라가기 중':'따라가기';if(value)centerPerson();}
 function setZoom(value){zoom=Math.max(.65,Math.min(1.4,value));$('#map-stage').style.width=1200*zoom+'px';$('#zoom-value').textContent=Math.round(zoom*100)+'%';if(following)centerPerson();}
-function activate(view){activeView=view;flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
+function activate(view){activeView=view;living.setActive(view==='living');flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
 function showDialog(content){if($('#dialog-backdrop').hidden)returnFocus=document.activeElement;$('#dialog-body').innerHTML=content;$('#dialog-backdrop').hidden=false;document.body.classList.add('dialog-open');$('.app-shell').inert=true;$('#dialog-close').focus();syncPause();}
 function closeDialog(){if($('#dialog-backdrop').hidden)return;$('#dialog-backdrop').hidden=true;currentRoom=null;document.body.classList.remove('dialog-open');$('.app-shell').inert=false;syncPause();if(returnFocus?.isConnected)returnFocus.focus();}
 function roomDialog(id){const m=roomMap.get(id);if(!m)return;currentRoom=id;const list=sim.getOccupants(id);
- showDialog(`<div class="dialog-image room-scene"><img src="${sceneSrc(id)}" alt="${m.name} 내부"><div class="room-residents">${list.map((p,i)=>`<button type="button" data-room-person="${p.data.id}" style="left:${18+i*13}%" aria-label="${p.data.name}와 대화">${sprite(p.data.id)}<span>${p.data.name}</span></button>`).join('')}</div><div class="dialog-image-title"><span>${m.en}</span><h2 id="detail-title">${m.name}</h2></div></div><div class="dialog-content"><div class="dialog-meta"><span>${m.role}</span><span>ROOM / ${String(modules.indexOf(m)+1).padStart(2,'0')}</span></div><p class="dialog-lead">${esc(m.desc)}</p><p>${esc(m.detail)}</p><div class="dialog-chipset"><strong>지금 이곳</strong><span>${list.length?list.map(p=>esc(p.data.name)).join(' · '):'조용한 빈 공간'}</span></div><div class="room-actionbar"><button type="button" class="gold-btn" data-room-action="${id}">${roomActions[id][0]}</button><button type="button" class="outline-btn" data-visit="${id}">함장 이동 예약</button>${id==='bridge'?'<button type="button" class="outline-btn" data-launch>항해 조종하기 ↗</button>':''}</div><p id="room-response" class="scene-response" aria-live="polite">공간의 활동을 선택하거나, 체류 중인 승무원에게 말을 걸어보세요.</p><div class="dialog-controls"><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+14)%15].id}">← 이전 공간</button><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+1)%15].id}">다음 공간 →</button></div></div>`);
+ showDialog(`<div class="dialog-image room-scene"><img src="${roomScene(id,quality)}" decoding="async" alt="${m.name} 내부"><div class="room-residents">${list.map((p,i)=>`<button type="button" data-room-person="${p.data.id}" style="left:${18+i*13}%" aria-label="${p.data.name}와 대화">${sprite(p.data.id)}<span>${p.data.name}</span></button>`).join('')}</div><div class="dialog-image-title"><span>${m.en}</span><h2 id="detail-title">${m.name}</h2></div></div><div class="dialog-content"><div class="dialog-meta"><span>${m.role}</span><span>ROOM / ${String(modules.indexOf(m)+1).padStart(2,'0')}</span></div><p class="dialog-lead">${esc(m.desc)}</p><p>${esc(m.detail)}</p><div class="dialog-chipset"><strong>지금 이곳</strong><span>${list.length?list.map(p=>esc(p.data.name)).join(' · '):'조용한 빈 공간'}</span></div><div class="room-actionbar"><button type="button" class="gold-btn" data-room-action="${id}">${roomActions[id][0]}</button><button type="button" class="outline-btn" data-visit="${id}">함장 이동 예약</button>${id==='bridge'?'<button type="button" class="outline-btn" data-launch>항해 조종하기 ↗</button>':''}</div><p id="room-response" class="scene-response" aria-live="polite">공간의 활동을 선택하거나, 체류 중인 승무원에게 말을 걸어보세요.</p><div class="dialog-controls"><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+14)%15].id}">← 이전 공간</button><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+1)%15].id}">다음 공간 →</button></div></div>`);
+ const image=$('.room-scene img');if(image)image.onerror=()=>{image.onerror=null;image.src=sceneSrc(id);};
 }
 function journalDialog(index){const j=journals[index],m=roomMap.get(j.room);currentRoom=null;showDialog(`<div class="dialog-image"><img src="${sceneSrc(j.room)}" alt="${m.name}"><div class="dialog-image-title"><span>JARVIS / ENTRY ${String(index+1).padStart(3,'0')}</span><h2 id="detail-title">${esc(j.title)}</h2></div></div><div class="dialog-content"><div class="dialog-meta"><span>${esc(j.date)}</span><span>${m.name}</span></div><p>${esc(j.people)} · ${esc(j.status)}</p><h3>관측 보고</h3><p class="dialog-lead">${esc(j.report)}</p><h3>자비스의 기록</h3><p class="reflection">${esc(j.reflection)}</p><p class="fiction-label">공개용으로 새롭게 창작한 가상의 항해일지입니다.</p></div>`);}
 function renderJournals(){const value=$('#journal-filter').value;$('#journal-grid').innerHTML=journals.map((j,index)=>({...j,index})).filter(j=>value==='all'||j.room===value).map(j=>`<button type="button" class="journal-card" data-journal="${j.index}"><div class="journal-art"><img src="${thumbSrc(j.room)}" alt="${roomMap.get(j.room).name}" width="320" height="180" loading="lazy"><span>ENTRY ${String(j.index+1).padStart(3,'0')}</span></div><div class="journal-body"><div class="journal-date">${esc(j.date)}</div><h3>${esc(j.title)}</h3><p>${esc(j.report)}</p><div class="journal-last"><span>${esc(j.status)}</span><span>기록 열람 ↗</span></div></div></button>`).join('')||'<p>이 구역의 기록은 준비 중입니다.</p>';}
 for(const m of modules){const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('#journal-filter').append(option);}
 buildMap();renderJournals();selectPerson('e');
 const flight=createFlight($('#flight-canvas'),$('#flight-ship'),state=>{const s=landscapes[state.sector];$('#sector-name').textContent=s.name;$('#sector-tag').textContent=s.tag;$('#sector-heading').textContent=s.name;$('#flight-log').textContent=s.log;$('#flight-event').textContent=state.message;$('#mode-label').textContent=state.manual?'MANUAL':'AUTOPILOT';$('#light-count').textContent=String(state.lit).padStart(2,'0');$('#shield-value').textContent=state.shield+'%';$('#distance-value').textContent=Math.floor(state.distance)+' ly';});
-function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));last=0;updateMap();}
+function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;document.body.classList.toggle('motion-stopped',stopped||reduced);$('#living-pause').textContent=paused?'움직임 재개':'움직임 일시정지';flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));last=0;updateMap();}
 function setManual(value,focus=true){flight.setManual(value);for(const [id,on] of [['auto-btn',!value],['manual-btn',value]]){$('#'+id).classList.toggle('active',on);$('#'+id).setAttribute('aria-pressed',String(on));}$('#manual-pad').hidden=!value;if(focus)$('#flight-wrap').focus();}
 function animate(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){requestAnimationFrame(animate);return;}last=now;
  const running=!loading&&!paused&&!blurred&&!document.hidden&&$('#dialog-backdrop').hidden;
@@ -101,9 +107,9 @@ if('serviceWorker' in navigator)window.addEventListener('load',async()=>{try{
 }catch{$('#offline-status').textContent='온라인에서 이용 중';}});
 
 let runId=createGameState().runId;
-function captureState(){return createGameState({simulation:sim.snapshot(),flight:flight.snapshot(),ui:{selectedCrew:selected,selectedView:activeView,paused,zoom,speed,following,quality:'high'}});}
+function captureState(){return createGameState({simulation:sim.snapshot(),flight:flight.snapshot(),ui:{selectedCrew:selected,selectedView:activeView,paused,zoom,speed,following,quality}});}
 function captureSave(){const state=captureState();state.runId=runId;return state;}
-function applyState(state){runId=state.runId;sim.restore(state.simulation);flight.restore(state.flight);paused=state.ui.paused;speed=state.ui.speed;$('#sim-speed').textContent=speed+'× 생활';selectPerson(state.ui.selectedCrew);setZoom(state.ui.zoom);setFollowing(state.ui.following);activate(state.ui.selectedView==='living'?'map':state.ui.selectedView);setManual(state.flight.manual,false);last=0;syncPause();}
+function applyState(state){runId=state.runId;sim.restore(state.simulation);flight.restore(state.flight);paused=state.ui.paused;setQuality(state.ui.quality);speed=state.ui.speed;$('#sim-speed').textContent=speed+'× 생활';selectPerson(state.ui.selectedCrew);setZoom(state.ui.zoom);setFollowing(state.ui.following);activate(state.ui.selectedView);setManual(state.flight.manual,false);last=0;syncPause();}
 const persistence=createPersistence({storage:createIndexedDBStorage(),capture:captureSave,apply:applyState,status:(message,ok)=>{$('#save-status').textContent=message;$('#save-status').dataset.ok=String(ok);}});
 function downloadSave(source,name='astraho-save.json'){const url=URL.createObjectURL(new Blob([source],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
 $('#export-save').addEventListener('click',()=>downloadSave(persistence.exportState()));
@@ -114,4 +120,12 @@ document.addEventListener('click',()=>persistence.schedule());
 setInterval(()=>persistence.flush(),15000);
 window.addEventListener('pagehide',()=>{flight.clear();persistence.flush();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)persistence.flush();});
-persistence.load().finally(()=>{loading=false;syncPause();});
+persistence.load().finally(()=>{loading=false;setQuality(quality);syncPause();});
+
+function setQuality(value){quality=value;$('#art-quality').value=value;living.setQuality(value);const image=$('#ark-hero-image');if(value==='high'){image.src='./assets/hero/astraho-exterior-hero.webp';image.hidden=false;}else{image.hidden=true;image.removeAttribute('src');}}
+$('#art-quality').addEventListener('change',event=>{setQuality(event.target.value);persistence.schedule();});
+$('#living-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
+$('#living-follow').addEventListener('click',()=>{setFollowing(!following);updateMap();});
+$('.design-previews').addEventListener('toggle',event=>{if(event.target.open)for(const image of event.target.querySelectorAll('[data-preview]'))image.src=image.dataset.preview;});
+$('#living-root').addEventListener('touchstart',()=>setFollowing(false),{passive:true});
+$('#living-root').addEventListener('wheel',()=>setFollowing(false),{passive:true});

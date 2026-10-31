@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "source": "Original new art generated 2026-10-31; derived mockups and vector props authored from originals",
+  "assets": [
+    {
+      "path": "assets/hero/astraho-exterior-hero.webp",
+      "width": 1279,
+      "height": 720,
+      "bytes": 301794,
+      "sha256": "294a4e68ac8c5059e9a8b83ecb9d44d780e0993e4dcafe863a99bd6c857fa2e6",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/life-scenes/bridge-life.webp",
+      "width": 1119,
+      "height": 630,
+      "bytes": 286152,
+      "sha256": "4029af57ffc5200cf3ace9f0b9c3fa37b889f5f4c65ceaf5e467093628f95c75",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/life-scenes/garden-life.webp",
+      "width": 1119,
+      "height": 630,
+      "bytes": 319138,
+      "sha256": "f4cbe1edd64360658c7662b4bf08a9894a04fbf0162843d900e50764d8a2c13f",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/life-scenes/lounge-life.webp",
+      "width": 1119,
+      "height": 630,
+      "bytes": 275314,
+      "sha256": "52f55b34ed11bde7131f275dc9b63f76094f02bea64a553fdc279db250232f8b",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/life-scenes/workshop-life.webp",
+      "width": 1119,
+      "height": 630,
+      "bytes": 293576,
+      "sha256": "e1816a556b3e3797e7bfcd1e3caf992c3c34411a47f7c98c919304d5f085d30f",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/mockups/living-ark-cutaway-4rooms.webp",
+      "width": 1365,
+      "height": 768,
+      "bytes": 315044,
+      "sha256": "990b2f9b1e1acd3240ecdf54fc83ed9968548c6f861a13b5c72f9604e6662310",
+      "format": "webp",
+      "alpha": false
+    },
+    {
+      "path": "assets/mockups/living-ark-cutaway-night.webp",
+      "width": 1365,
+      "height": 768,
+      "bytes": 307270,
+      "sha256": "f803ee162cbca4bc174bdcaad0a101c85e2def81d8f993c9f8f3cf648b741131",
+      "format": "webp",
+      "alpha": false
+    }
+  ]
+}
