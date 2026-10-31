@@ -21,6 +21,8 @@ assert.ok(!read('styles.css').includes('@import'));
 console.log(`Production preflight OK: ${modules.length} modules, ${crew.length} directional sheets, ${landscapes.length} landscapes, ${context.files.length} offline URLs; ${manifest.assets.reduce((s,a)=>s+a.bytes,0)} bytes WebP.`);
 
 const extra=JSON.parse(read('assets/living-art-manifest.json'));
-assert.equal(extra.assets.length,7);
+assert.equal(extra.assets.length,19);
 for(const art of extra.assets){const b=readFileSync(new URL(art.path,root));assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.ok(b.length<350000,art.path);const info=webpInfo(b);assert.equal(info.width,art.width,art.path);assert.equal(info.height,art.height,art.path);assert.equal(info.alpha,art.alpha,art.path);}
 console.log(`Living art OK: ${extra.assets.length} WebP, ${extra.assets.reduce((n,a)=>n+a.bytes,0)} bytes; on demand, not shell precache.`);
+
+for(const art of extra.assets){if(art.path.includes('/props/')){assert.equal(art.width,256);assert.equal(art.height,256);assert.equal(art.alpha,true);}if(art.path.includes('/fx/')){assert.equal(art.width,1152);assert.equal(art.height,192);assert.equal(art.width/art.height,6);assert.equal(art.alpha,true);}}
