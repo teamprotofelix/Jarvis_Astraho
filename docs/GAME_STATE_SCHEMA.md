@@ -31,3 +31,7 @@ PWA CacheStorage는 정적 파일만 저장한다. SW 교체/기존 캐시 정�
 ## PR3의 v1 확장
 
 `simulation.rngState`는 32bit nonzero seed 상태다. member의 `life`는 state/actionId/start/remaining/energy/lastAction/animation/messageKey/prop/label/task를 저장한다. task는 이동 완료 후 수행할 역할 작업 메타데이터와 duration이다. PR1/PR2 v1 저장에 이 필드가 없으면 기존 pause/phase를 보존하며 idle/walk 기본값과 seed 20261031을 채운다. 알려진 작업·상태·소품·방/역할 일치, energy와 시간 범위를 검증한다. 새로운 seed 상태를 보존하므로 복원 후에도 같은 선택 순서가 이어진다. PR3의 새 필드를 읽지 못하는 이전 코드로 돌아갈 때는 내보낸 JSON을 보존하고 최신 앱에서 다시 복원한다.
+
+## PR4 schema 2
+
+v1 envelope + `missions:{seed,clock,revision,sequence,selectedId,active,signals,events}`. 신호 6개, 활성 임무 최대 1개, 이벤트 최대 24개. v1→v2는 기존 원본과 simulation/RNG/flight/ui를 보존한 복사본 migration이다. 미래 버전은 기존 저장을 자동 덮어쓰지 않는다. 경계별 검증은 `state/legacy-state.js`, `missions/model.js`, `state/game-state.js`에 분리한다. 여러 탭의 저장은 IDB 내부 revision/current 비교로 충돌을 감지한다.

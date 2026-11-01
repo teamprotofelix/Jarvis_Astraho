@@ -6,7 +6,7 @@ import vm from 'node:vm';
 import {modules,crew,landscapes,sceneSrc,spriteSrc,thumbSrc,landscapeSrc} from '../js/world-data.js';
 const root=new URL('../',import.meta.url),read=p=>readFileSync(new URL(p,root),'utf8');
 const html=read('index.html'),main=read('js/main.js');
-for(const match of main.matchAll(/\$\('#([\w-]+)'\)/g))assert.ok((html+main+read('js/views/living-view.js')).includes(`id="${match[1]}"`),`Missing DOM id: ${match[1]}`);
+for(const match of main.matchAll(/\$\('#([\w-]+)'\)/g))assert.ok((html+scripts('js').map(read).join('\n')).includes(`id="${match[1]}"`),`Missing DOM id: ${match[1]}`);
 for(const match of html.matchAll(/(?:src|href)="(\.\/[^"#]+)"/g))assert.ok(existsSync(new URL(match[1],root)),`HTML asset: ${match[1]}`);
 function scripts(dir){return readdirSync(new URL(dir,root),{withFileTypes:true}).flatMap(e=>e.isDirectory()?scripts(dir+'/'+e.name):[dir+'/'+e.name]);}
 for(const file of scripts('js'))for(const match of read(file).matchAll(/from ['"](\.[^'"]+)['"]/g))assert.ok(existsSync(new URL(match[1],new URL(file,root))),`Import: ${file} ${match[1]}`);
@@ -26,3 +26,8 @@ for(const art of extra.assets){const b=readFileSync(new URL(art.path,root));asse
 console.log(`Living art OK: ${extra.assets.length} WebP, ${extra.assets.reduce((n,a)=>n+a.bytes,0)} bytes; on demand, not shell precache.`);
 
 for(const art of extra.assets){if(art.path.includes('/props/')){assert.equal(art.width,256);assert.equal(art.height,256);assert.equal(art.alpha,true);}if(art.path.includes('/fx/')){assert.equal(art.width,1152);assert.equal(art.height,192);assert.equal(art.width/art.height,6);assert.equal(art.alpha,true);}}
+
+const expeditionArt=JSON.parse(read('assets/expedition-art-manifest.json'));
+assert.ok(expeditionArt.assets.length>=7&&expeditionArt.assets.length<=35);
+for(const art of expeditionArt.assets){const b=readFileSync(new URL(art.path,root)),info=webpInfo(b);assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.ok(b.length<350000);assert.deepEqual(info,{width:art.width,height:art.height,alpha:art.alpha},art.path);if(art.path.includes('/fx/')){assert.equal(info.width,1152);assert.equal(info.height,192);}}
+console.log(`Expedition art OK: ${expeditionArt.assets.length} selected WebP, ${expeditionArt.assets.reduce((n,a)=>n+a.bytes,0)} bytes; original procedural illustration.`);
