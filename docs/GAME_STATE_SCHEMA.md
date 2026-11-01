@@ -1,10 +1,10 @@
-# 저장 상태 schemaVersion 1
+# 저장 상태와 마이그레이션 (현재 schemaVersion 4)
 
 `state/game-state.js`는 DOM/Map/함수 없는 envelope를 검증한다. JSON은 UTF-8 256KB 이하, 알려진 키만 허용한다. `__proto__`/constructor/prototype 키, 잘못된 ID·범위·버전·중복 승무원·초과 이벤트/객체를 거부한다. 가져오기 파일은 HTML/eval로 실행하지 않는다.
 
 | 필드 | 계약 |
 | --- | --- |
-| schemaVersion / runId / savedAt | 1 / 로컬 run ID / ISO 시각 |
+| schemaVersion / runId / savedAt | 4 / 로컬 run ID / ISO 시각 |
 | ui | selectedCrew, selectedView, paused, zoom(.65~1.4), speed(1/2/4), following, quality |
 | simulation | elapsed, serial, 11 members, 최근 events 최대 12 |
 | member | id, room, target, queued, routeIndex, phase, pos, path, pause, activityIndex, direction |
@@ -39,3 +39,10 @@ v1 envelope + `missions:{seed,clock,revision,sequence,selectedId,active,signals,
 ## PR5 schema 3
 
 schema2 + `expedition`(nullable compact player/supply/scanned/collected/visited/action deltas) + `rewardLedger`(lastSequence, completionIds≤64, resource totals 0~999). v1→v2→v3에서 원본 crew/RNG/flight/ui/missions 보존. seed로 타일을 재생성하여 잘못된 좌표/벽 스폰/외부 ID/배열 상한을 검사한다. 과거 임무 번호는 ledger 목록에서 제거되어도 재지급 불가다. 원정과 임무·정산 상태를 교차 검사한다.
+
+
+## PR6 schema 4
+
+schema3 + `inventory:{counts}` + `research:{unlocked,active}` + `construction:{clock,sequence,revision,transactionIds,levels,active,events}`. resources 6종 0~999, 알려진 시설 4종 level 0/1, 연구/건설 동시 슬롯 각각 최대 1개, 거래 ID 최근 64개와 단조 sequence, 시설 이벤트 최대 24개다. v3의 기존 rewardLedger.totals는 최초 inventory로 한 번 복사하며 이후 보상 인도 시에만 inventory를 증가시킨다. v1/v2는 순서대로 기본 필드를 추가한다. 모든 migration은 원본 복사/이전 단계 검증 후 수행한다.
+
+연구 해금과 선행 시설, active 작업/남은 시간, 시설을 사용하는 승무원의 알려진 actionId/task, 임무와 보상 원장을 교차 검증한다. 거래 nonce와 단조 번호로 오래된 재전송도 다시 차감/제작되지 않는다. 계정/서버 없이 작동하는 로컬 저장이며 사용자가 직접 수정한 JSON의 정당한 값까지 막는 anti-cheat는 아니다.

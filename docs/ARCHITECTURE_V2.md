@@ -1,5 +1,7 @@
 # Living Ark 2.0 상태와 레이어 계약
 
+현재 v1.7의 저장 계약은 schema 4이며 PR4~PR6의 missions/expedition/economy와 순차 migration을 포함한다. 아래 PR0~PR3 설계는 초기 기록이며 최신 필드는 GAME_STATE_SCHEMA.md, MISSIONS.md, EXPEDITION.md, ECONOMY.md를 따른다.
+
 PR0 → PR1(persistence) → PR2(visual core) → PR3(crew life) 순서의 stacked PR. 선행 PR 병합 뒤 다음 PR의 base를 main으로 변경하며 이미 포함된 선행 커밋을 중복 병합하지 않는다.
 
 ## 상태 계약

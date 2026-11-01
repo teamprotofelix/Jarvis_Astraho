@@ -168,6 +168,38 @@
       "alpha": true,
       "bytes": 1052,
       "sha256": "a4f3f70da45c0a51cbf0ae211cf673f2f85b241bf9b67d0ded5ff7a3bca62e23"
+    },
+    {
+      "path": "assets/ship-upgrades/survey_hangar.webp",
+      "width": 640,
+      "height": 420,
+      "alpha": true,
+      "bytes": 1926,
+      "sha256": "b05e7afc14bac01120c8df49671f0732b6bad0636bcc29a4b0d5bd03ef497c8b"
+    },
+    {
+      "path": "assets/ship-upgrades/anomaly_lab.webp",
+      "width": 640,
+      "height": 420,
+      "alpha": true,
+      "bytes": 1554,
+      "sha256": "052e41047e6721cdd3ba5419c701fd634c07ce6859b8283083de4bef20cbd15b"
+    },
+    {
+      "path": "assets/ship-upgrades/bio_dome.webp",
+      "width": 640,
+      "height": 420,
+      "alpha": true,
+      "bytes": 2624,
+      "sha256": "69c1ce679049a8ab3ee578cbadfb53249ab3774b5afe43b0db57531a8da1a0a6"
+    },
+    {
+      "path": "assets/ship-upgrades/worldtree_resonator.webp",
+      "width": 640,
+      "height": 420,
+      "alpha": true,
+      "bytes": 2526,
+      "sha256": "e190c64bcac426cbf0588c5f87eba8205d5b97bb8e6a4c1218bb2e9ebc2efee0"
     }
   ]
 }
