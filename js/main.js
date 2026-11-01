@@ -1,3 +1,6 @@
+import {createCampaign} from './campaign/session.js';
+import {createMissionBoard} from './views/mission-board.js';
+import {destination,missionLabels} from './missions/catalog.js';
 import {renderCrewAction,roomStagePosition} from './crew/animation.js';
 import {stateLabels} from './crew/behaviors.js';
 import {createLivingView,roomScene} from './views/living-view.js';
@@ -10,6 +13,8 @@ import {createFlight} from './flight.js';
 const $=s=>document.querySelector(s);
 const roomMap=new Map(modules.map(m=>[m.id,m]));
 const sim=createCrewSimulation();
+const campaign=createCampaign();
+const missionBoard=createMissionBoard($('#mission-board'),missionCommand);
 const living=createLivingView($('#living-root'));
 let quality='high',lastFlightEvent='';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -27,6 +32,7 @@ function buildMap(){
  $('#statuses').innerHTML=[['세계수 공명','안정'],['항로 분석','관측 중'],['생활 환경','정상']].map(([label,value])=>`<div class="status-row"><div><span>${label}</span><b>${value}</b></div><div class="status-track"><i style="width:96%;background:var(--mint)"></i></div></div>`).join('');
 }
 function updateMap(){
+ if(!loading)updateMissionUI();
  living.render(sim,{selected,zoom,motion:!paused&&!blurred&&!document.hidden&&!reduced,following});
  $('#living-selection').textContent=member().data.name+' · '+sim.getDisplayRoom(member())+' · '+sim.getActivity(member());
  for(const m of sim.members){const el=$(`.crew-sprite[data-person="${m.data.id}"]`);const index=crew.indexOf(m.data),idle=m.phase!=='이동';
@@ -67,7 +73,7 @@ function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$
 function setManual(value,focus=true){flight.setManual(value);for(const [id,on] of [['auto-btn',!value],['manual-btn',value]]){$('#'+id).classList.toggle('active',on);$('#'+id).setAttribute('aria-pressed',String(on));}$('#manual-pad').hidden=!value;if(focus)$('#flight-wrap').focus();}
 function animate(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){requestAnimationFrame(animate);return;}last=now;
  const running=!loading&&!paused&&!blurred&&!document.hidden&&$('#dialog-backdrop').hidden;
- if(running){const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision)persistence.schedule();if(activeView==='voyage')flight.advance(dt);}
+ if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision)persistence.schedule();if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance);if(campaign.revision!==missionRevision)persistence.schedule();}
  if(now-lastUI>160){updateMap();lastUI=now;}requestAnimationFrame(animate);
 }
 $('#motion-toggle').addEventListener('click',()=>{paused=!paused;syncPause();});
@@ -110,9 +116,9 @@ if('serviceWorker' in navigator)window.addEventListener('load',async()=>{try{
 }catch{$('#offline-status').textContent='온라인에서 이용 중';}});
 
 let runId=createGameState().runId;
-function captureState(){return createGameState({simulation:sim.snapshot(),flight:flight.snapshot(),ui:{selectedCrew:selected,selectedView:activeView,paused,zoom,speed,following,quality}});}
+function captureState(){return createGameState({simulation:sim.snapshot(),flight:flight.snapshot(),ui:{selectedCrew:selected,selectedView:activeView,paused,zoom,speed,following,quality},...campaign.snapshot()});}
 function captureSave(){const state=captureState();state.runId=runId;return state;}
-function applyState(state){runId=state.runId;sim.restore(state.simulation);flight.restore(state.flight);paused=state.ui.paused;setQuality(state.ui.quality);speed=state.ui.speed;$('#sim-speed').textContent=speed+'× 생활';selectPerson(state.ui.selectedCrew);setZoom(state.ui.zoom);setFollowing(state.ui.following);activate(state.ui.selectedView);setManual(state.flight.manual,false);last=0;syncPause();}
+function applyState(state){runId=state.runId;campaign.restore(state);sim.restore(state.simulation);flight.restore(state.flight);paused=state.ui.paused;setQuality(state.ui.quality);speed=state.ui.speed;$('#sim-speed').textContent=speed+'× 생활';selectPerson(state.ui.selectedCrew);setZoom(state.ui.zoom);setFollowing(state.ui.following);activate(state.ui.selectedView);setManual(state.flight.manual,false);last=0;syncPause();}
 const persistence=createPersistence({storage:createIndexedDBStorage(),capture:captureSave,apply:applyState,status:(message,ok)=>{$('#save-status').textContent=message;$('#save-status').dataset.ok=String(ok);}});
 function downloadSave(source,name='astraho-save.json'){const url=URL.createObjectURL(new Blob([source],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
 $('#export-save').addEventListener('click',()=>downloadSave(persistence.exportState()));
@@ -138,3 +144,7 @@ $('#living-talk').addEventListener('click',()=>{sim.interact(selected);$('#livin
 $('#living-visit').addEventListener('click',()=>{const m=member();roomDialog(m.phase==='이동'?m.target:m.room);});
 
 $('#living-root').addEventListener('keydown',event=>{if(event.key.startsWith('Arrow')&&following)setFollowing(false);});
+
+function updateMissionUI(){const a=campaign.missions.active;$('#voyage-target').textContent=a?`${destination(a.destinationId).name} · ${missionLabels[a.status]} · ${a.status==='traveling'?Math.max(0,a.requiredDistance-(flight.snapshot().distance-a.startDistance)).toFixed(0)+' ly 남음':'신호 패널에서 다음 단계 확인'}`:'탐사 항로를 먼저 선택하세요.';if(activeView==='missions')missionBoard.render(campaign.missions,{distance:flight.snapshot().distance,motion:!paused&&!blurred&&!document.hidden&&!reduced});$('#mission-pause').textContent=paused?'움직임 재개':'움직임 일시정지';}
+function missionCommand(event){try{campaign.command({...event,distance:flight.snapshot().distance});persistence.schedule();$('#mission-notice').textContent=event.type==='depart'?'항로를 선택했습니다. 실제 비행 거리로 목표에 접근합니다.':'신호 상태를 갱신했습니다.';if(event.type==='depart')activate('voyage');updateMissionUI();}catch(error){$('#mission-notice').textContent=error.message;}}
+$('#mission-pause').addEventListener('click',()=>{paused=!paused;syncPause();});

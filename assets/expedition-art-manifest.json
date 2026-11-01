@@ -1,0 +1,61 @@
+{
+  "generator": "original procedural illustration, Pillow + numpy; not AI image generation",
+  "assets": [
+    {
+      "path": "assets/expeditions/preview/crystal_shore-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 34516,
+      "sha256": "0bc0da8bccc9d1dc122591e20ca02fb296f1ec00d17447c30f355580699c3e0e"
+    },
+    {
+      "path": "assets/expeditions/preview/ember_canyons-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 35732,
+      "sha256": "01f8f00d3945aeb3ad640107c4aa85aef8922dca272714145898c79ef0cf4394"
+    },
+    {
+      "path": "assets/expeditions/preview/aurora_glacier-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 37186,
+      "sha256": "f236964ea406981ba89abd7023d3b75af78ad743a83305afae98a60c992c0c0c"
+    },
+    {
+      "path": "assets/expeditions/preview/violet_mycelium-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 34174,
+      "sha256": "373baae534c44c244638df97c4337e46463628fa9dc7aaa532c7036d6cbfa1c1"
+    },
+    {
+      "path": "assets/expeditions/preview/ancient_ring_ruins-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 35742,
+      "sha256": "bb6404dd1aaa7df730dfef2635fd5618b3faecc2e69a65d11b1b42daa655205c"
+    },
+    {
+      "path": "assets/expeditions/preview/gravity_orchard-preview.webp",
+      "width": 960,
+      "height": 540,
+      "alpha": false,
+      "bytes": 39846,
+      "sha256": "537c4709f3e786f273ed5a3d2517e52660bcb16d7b5b9ea76b90f752e62ebbf6"
+    },
+    {
+      "path": "assets/expeditions/fx/signal_resolve.webp",
+      "width": 1152,
+      "height": 192,
+      "alpha": true,
+      "bytes": 2190,
+      "sha256": "e7f80f7e6d9774234f93bcce24d7b57a440f52680e69a63d0f6eb1bfec052a13"
+    }
+  ]
+}
