@@ -35,3 +35,7 @@ PWA CacheStorage는 정적 파일만 저장한다. SW 교체/기존 캐시 정�
 ## PR4 schema 2
 
 v1 envelope + `missions:{seed,clock,revision,sequence,selectedId,active,signals,events}`. 신호 6개, 활성 임무 최대 1개, 이벤트 최대 24개. v1→v2는 기존 원본과 simulation/RNG/flight/ui를 보존한 복사본 migration이다. 미래 버전은 기존 저장을 자동 덮어쓰지 않는다. 경계별 검증은 `state/legacy-state.js`, `missions/model.js`, `state/game-state.js`에 분리한다. 여러 탭의 저장은 IDB 내부 revision/current 비교로 충돌을 감지한다.
+
+## PR5 schema 3
+
+schema2 + `expedition`(nullable compact player/supply/scanned/collected/visited/action deltas) + `rewardLedger`(lastSequence, completionIds≤64, resource totals 0~999). v1→v2→v3에서 원본 crew/RNG/flight/ui/missions 보존. seed로 타일을 재생성하여 잘못된 좌표/벽 스폰/외부 ID/배열 상한을 검사한다. 과거 임무 번호는 ledger 목록에서 제거되어도 재지급 불가다. 원정과 임무·정산 상태를 교차 검사한다.

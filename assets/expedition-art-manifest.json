@@ -56,6 +56,118 @@
       "alpha": true,
       "bytes": 2190,
       "sha256": "e7f80f7e6d9774234f93bcce24d7b57a440f52680e69a63d0f6eb1bfec052a13"
+    },
+    {
+      "path": "assets/expeditions/scenes/crystal_shore.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": false,
+      "bytes": 151378,
+      "sha256": "410d73d5cb8b6443c48fb04c47048a5428d93bc7efeaa32f8fda0649a6b85fc6"
+    },
+    {
+      "path": "assets/expeditions/scenes/ember_canyons.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": false,
+      "bytes": 157376,
+      "sha256": "5337b385131a4e0b352538e0043d951f3ad2e4c6069f49dd43ed998df2e5b036"
+    },
+    {
+      "path": "assets/expeditions/scenes/aurora_glacier.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": false,
+      "bytes": 143884,
+      "sha256": "20f01e9121ba87c640a4df2bf4a0f099ca297a10de8210f1337aab9ef1f0b971"
+    },
+    {
+      "path": "assets/expeditions/layers/crystal_mist.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": true,
+      "bytes": 59810,
+      "sha256": "2f77db823ee9e63c5bb876dce94701d31993468e849fbc0e1588a2037809330d"
+    },
+    {
+      "path": "assets/expeditions/layers/cosmic_dust.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": true,
+      "bytes": 63666,
+      "sha256": "952d5f21608e88935434d3bd96d82d87430703fa217b50b1e55e05c63a9f2d7e"
+    },
+    {
+      "path": "assets/expeditions/layers/aurora_curtain.webp",
+      "width": 1920,
+      "height": 1080,
+      "alpha": true,
+      "bytes": 56512,
+      "sha256": "aeb60277fd767736f68474baf0dba55ec68094f7ab85c823e5939553a47eb24f"
+    },
+    {
+      "path": "assets/expeditions/fx/survey_scan.webp",
+      "width": 1152,
+      "height": 192,
+      "alpha": true,
+      "bytes": 2190,
+      "sha256": "33534eab405e6687fba0d94f4348403d3208d454150f39894fc38c5df98c2779"
+    },
+    {
+      "path": "assets/expeditions/fx/resource_collect.webp",
+      "width": 1152,
+      "height": 192,
+      "alpha": true,
+      "bytes": 2190,
+      "sha256": "a12d7c15beae781e8d4bc1142180314f2460ccae825f2e045c9495141c91f6ee"
+    },
+    {
+      "path": "assets/expeditions/items/resonance_crystal.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 636,
+      "sha256": "89bf82de775c2ae1c22e859ee46e0a280b3a8ebc6d7e625d93ebd3b7a621acc7"
+    },
+    {
+      "path": "assets/expeditions/items/ancient_fragment.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 638,
+      "sha256": "2b6c3bc6bb056e431b74c874e522eb3770a5f3df2a29dd6057858071f3d810cb"
+    },
+    {
+      "path": "assets/expeditions/items/biosample.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 1052,
+      "sha256": "945e97cee6f460ab98f1cc586fad0895846008395ed82bbf73134542e772fe91"
+    },
+    {
+      "path": "assets/expeditions/items/starmetal.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 636,
+      "sha256": "a20dff895ffc06e46ae6d8ba419b0dd83d057feb780a0c1c0a954ab08f307d56"
+    },
+    {
+      "path": "assets/expeditions/items/worldtree_seed.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 658,
+      "sha256": "8229ead41d5c803218ffa9f1b1dc61fad03902d1d8f8dd2997875bdeebac85e7"
+    },
+    {
+      "path": "assets/expeditions/items/memory_echo.webp",
+      "width": 256,
+      "height": 256,
+      "alpha": true,
+      "bytes": 1052,
+      "sha256": "a4f3f70da45c0a51cbf0ae211cf673f2f85b241bf9b67d0ded5ff7a3bca62e23"
     }
   ]
 }

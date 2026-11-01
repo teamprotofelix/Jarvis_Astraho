@@ -18,7 +18,7 @@ export function createGameState({simulation=createCrewSimulation().snapshot(),fl
 export function validateState(value){
  required(value,{schemaVersion:1,runId:'',savedAt:'',simulation:{},flight:{},ui:{}});
  if(value.schemaVersion!==1)fail('지원하지 않는 저장 버전');text(value.runId,80);text(value.savedAt,40);if(!Number.isFinite(Date.parse(value.savedAt)))fail('날짜 오류');
- const ui=value.ui;required(ui,{selectedCrew:'',selectedView:'',paused:false,zoom:1,speed:1,following:false,quality:''});choice(ui.selectedCrew,crewIds);choice(ui.selectedView,['map','voyage','journal','living','missions']);choice(ui.quality,['high','low']);choice(ui.speed,[1,2,4]);num(ui.zoom,.65,1.4);if(typeof ui.paused!=='boolean'||typeof ui.following!=='boolean')fail('설정 오류');
+ const ui=value.ui;required(ui,{selectedCrew:'',selectedView:'',paused:false,zoom:1,speed:1,following:false,quality:''});choice(ui.selectedCrew,crewIds);choice(ui.selectedView,['map','voyage','journal','living','missions','expedition']);choice(ui.quality,['high','low']);choice(ui.speed,[1,2,4]);num(ui.zoom,.65,1.4);if(typeof ui.paused!=='boolean'||typeof ui.following!=='boolean')fail('설정 오류');
  const s=value.simulation;required(s,{elapsed:0,serial:0,members:[],events:[]},['rngState']);if(s.rngState!==undefined){num(s.rngState,1,4294967295);if(!Number.isInteger(s.rngState))fail('난수 상태 오류');}num(s.elapsed,0,1e10);num(s.serial,0,1e12);if(!Number.isInteger(s.serial))fail('이벤트 번호 오류');
  if(!Array.isArray(s.members)||s.members.length!==crew.length)fail('승무원 수 오류');
  const seen=new Set();for(const m of s.members){

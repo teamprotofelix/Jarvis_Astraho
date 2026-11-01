@@ -1,3 +1,5 @@
+import {createExpeditionView} from './views/expedition-view.js';
+import {createLevel} from './expedition/level.js';
 import {createCampaign} from './campaign/session.js';
 import {createMissionBoard} from './views/mission-board.js';
 import {destination,missionLabels} from './missions/catalog.js';
@@ -15,6 +17,7 @@ const roomMap=new Map(modules.map(m=>[m.id,m]));
 const sim=createCrewSimulation();
 const campaign=createCampaign();
 const missionBoard=createMissionBoard($('#mission-board'),missionCommand);
+const expeditionView=createExpeditionView($('#expedition-root'),expeditionAction);
 const living=createLivingView($('#living-root'));
 let quality='high',lastFlightEvent='';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -32,7 +35,7 @@ function buildMap(){
  $('#statuses').innerHTML=[['세계수 공명','안정'],['항로 분석','관측 중'],['생활 환경','정상']].map(([label,value])=>`<div class="status-row"><div><span>${label}</span><b>${value}</b></div><div class="status-track"><i style="width:96%;background:var(--mint)"></i></div></div>`).join('');
 }
 function updateMap(){
- if(!loading)updateMissionUI();
+ if(!loading){updateMissionUI();expeditionView.render(campaign.expedition,campaign.rewardLedger,{quality,motion:!paused&&!blurred&&!document.hidden&&!reduced});expeditionView.pause(paused||blurred||document.hidden||!$('#dialog-backdrop').hidden);}
  living.render(sim,{selected,zoom,motion:!paused&&!blurred&&!document.hidden&&!reduced,following});
  $('#living-selection').textContent=member().data.name+' · '+sim.getDisplayRoom(member())+' · '+sim.getActivity(member());
  for(const m of sim.members){const el=$(`.crew-sprite[data-person="${m.data.id}"]`);const index=crew.indexOf(m.data),idle=m.phase!=='이동';
@@ -56,7 +59,7 @@ function selectPerson(id){if(!crew.some(p=>p.id===id))return;selected=id;talkInd
 function centerPerson(){const m=member(),scroll=activeView==='living'?$('#living-scroll'):$('#map-scroll'),stage=activeView==='living'?$('#living-stage'):$('#map-stage');if(!scroll||!stage)return;scroll.scrollLeft=(m.pos.x/1200)*stage.clientWidth-scroll.clientWidth/2;}
 function setFollowing(value){following=value;$('#living-follow').setAttribute('aria-pressed',String(value));$('#follow-person').classList.toggle('active',value);$('#follow-person').setAttribute('aria-pressed',String(value));$('#follow-person').textContent=value?'따라가기 중':'따라가기';if(value)centerPerson();}
 function setZoom(value){zoom=Math.max(.65,Math.min(1.4,value));$('#map-stage').style.width=1200*zoom+'px';$('#zoom-value').textContent=Math.round(zoom*100)+'%';if(following)centerPerson();}
-function activate(view){activeView=view;living.setActive(view==='living');flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
+function activate(view){activeView=view;living.setActive(view==='living');expeditionView.setActive(view==='expedition');flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
 function showDialog(content){if($('#dialog-backdrop').hidden)returnFocus=document.activeElement;$('#dialog-body').innerHTML=content;$('#dialog-backdrop').hidden=false;document.body.classList.add('dialog-open');$('.app-shell').inert=true;$('#dialog-close').focus();syncPause();}
 function closeDialog(){if($('#dialog-backdrop').hidden)return;$('#dialog-backdrop').hidden=true;currentRoom=null;document.body.classList.remove('dialog-open');$('.app-shell').inert=false;syncPause();if(returnFocus?.isConnected)returnFocus.focus();}
 function roomDialog(id){const m=roomMap.get(id);if(!m)return;currentRoom=id;const list=sim.getOccupants(id);
@@ -69,11 +72,11 @@ function renderJournals(){const value=$('#journal-filter').value;$('#journal-gri
 for(const m of modules){const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('#journal-filter').append(option);}
 buildMap();renderJournals();selectPerson('e');
 const flight=createFlight($('#flight-canvas'),$('#flight-ship'),state=>{const eventKey=[state.sector,state.lit,state.shield].join(':');if(!loading&&eventKey!==lastFlightEvent)persistence.schedule();lastFlightEvent=eventKey;const s=landscapes[state.sector];$('#sector-name').textContent=s.name;$('#sector-tag').textContent=s.tag;$('#sector-heading').textContent=s.name;$('#flight-log').textContent=s.log;$('#flight-event').textContent=state.message;$('#mode-label').textContent=state.manual?'MANUAL':'AUTOPILOT';$('#light-count').textContent=String(state.lit).padStart(2,'0');$('#shield-value').textContent=state.shield+'%';$('#distance-value').textContent=Math.floor(state.distance)+' ly';});
-function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;document.body.classList.toggle('motion-stopped',stopped||reduced);$('#living-pause').textContent=paused?'움직임 재개':'움직임 일시정지';flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));last=0;updateMap();}
+function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;document.body.classList.toggle('motion-stopped',stopped||reduced);$('#living-pause').textContent=paused?'움직임 재개':'움직임 일시정지';expeditionView.pause(stopped);$('#expedition-pause').textContent=paused?'움직임 재개':'움직임 일시정지';flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));last=0;updateMap();}
 function setManual(value,focus=true){flight.setManual(value);for(const [id,on] of [['auto-btn',!value],['manual-btn',value]]){$('#'+id).classList.toggle('active',on);$('#'+id).setAttribute('aria-pressed',String(on));}$('#manual-pad').hidden=!value;if(focus)$('#flight-wrap').focus();}
 function animate(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){requestAnimationFrame(animate);return;}last=now;
  const running=!loading&&!paused&&!blurred&&!document.hidden&&$('#dialog-backdrop').hidden;
- if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision)persistence.schedule();if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance);if(campaign.revision!==missionRevision)persistence.schedule();}
+ if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision)persistence.schedule();if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance,expeditionView.input(campaign.expedition),{expeditionActive:activeView==='expedition'});if(campaign.revision!==missionRevision)persistence.schedule();}
  if(now-lastUI>160){updateMap();lastUI=now;}requestAnimationFrame(animate);
 }
 $('#motion-toggle').addEventListener('click',()=>{paused=!paused;syncPause();});
@@ -104,7 +107,7 @@ window.addEventListener('keydown',e=>{
 });
 window.addEventListener('keyup',e=>flight.input(e.key,false));
 for(const button of document.querySelectorAll('#manual-pad button')){button.addEventListener('pointerdown',e=>{e.preventDefault();if(paused||blurred)return;button.setPointerCapture(e.pointerId);flight.input(button.dataset.key,true);});for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>flight.input(button.dataset.key,false));}
-window.addEventListener('blur',()=>{blurred=true;syncPause();});window.addEventListener('focus',()=>{blurred=false;syncPause();});document.addEventListener('visibilitychange',syncPause);window.addEventListener('resize',()=>{if(activeView==='voyage')flight.resize();});
+window.addEventListener('blur',()=>{expeditionView.clear();blurred=true;syncPause();});window.addEventListener('focus',()=>{blurred=false;syncPause();});document.addEventListener('visibilitychange',syncPause);window.addEventListener('resize',()=>{if(activeView==='voyage')flight.resize();if(activeView==='expedition')expeditionView.resize();});
 new IntersectionObserver(entries=>{if(activeView==='voyage'){flightVisible=entries[0].isIntersecting;syncPause();}},{threshold:.05}).observe($('#flight-wrap'));
 setZoom(innerWidth<650?.72:1);syncPause();requestAnimationFrame(animate);
 // Complete offline readiness is announced only after an atomic precache succeeds.
@@ -145,6 +148,10 @@ $('#living-visit').addEventListener('click',()=>{const m=member();roomDialog(m.p
 
 $('#living-root').addEventListener('keydown',event=>{if(event.key.startsWith('Arrow')&&following)setFollowing(false);});
 
-function updateMissionUI(){const a=campaign.missions.active;$('#voyage-target').textContent=a?`${destination(a.destinationId).name} · ${missionLabels[a.status]} · ${a.status==='traveling'?Math.max(0,a.requiredDistance-(flight.snapshot().distance-a.startDistance)).toFixed(0)+' ly 남음':'신호 패널에서 다음 단계 확인'}`:'탐사 항로를 먼저 선택하세요.';if(activeView==='missions')missionBoard.render(campaign.missions,{distance:flight.snapshot().distance,motion:!paused&&!blurred&&!document.hidden&&!reduced});$('#mission-pause').textContent=paused?'움직임 재개':'움직임 일시정지';}
-function missionCommand(event){try{campaign.command({...event,distance:flight.snapshot().distance});persistence.schedule();$('#mission-notice').textContent=event.type==='depart'?'항로를 선택했습니다. 실제 비행 거리로 목표에 접근합니다.':'신호 상태를 갱신했습니다.';if(event.type==='depart')activate('voyage');updateMissionUI();}catch(error){$('#mission-notice').textContent=error.message;}}
+function updateMissionUI(){const a=campaign.missions.active;$('#voyage-target').textContent=a?`${destination(a.destinationId).name} · ${missionLabels[a.status]} · ${a.status==='traveling'?Math.max(0,a.requiredDistance-(flight.snapshot().distance-a.startDistance)).toFixed(0)+' ly 남음':'신호 패널에서 다음 단계 확인'}`:'탐사 항로를 먼저 선택하세요.';if(activeView==='missions')missionBoard.render(campaign.missions,{distance:flight.snapshot().distance,motion:!paused&&!blurred&&!document.hidden&&!reduced,canLaunch:true,expeditionActive:!!campaign.expedition});$('#mission-pause').textContent=paused?'움직임 재개':'움직임 일시정지';}
+function missionCommand(event){try{if(event.type==='launch'){campaign.launch();persistence.schedule();activate('expedition');$('#exp-wrap').focus({preventScroll:true});return;}campaign.command({...event,distance:flight.snapshot().distance});persistence.schedule();$('#mission-notice').textContent=event.type==='depart'?'항로를 선택했습니다. 실제 비행 거리로 목표에 접근합니다.':'신호 상태를 갱신했습니다.';if(event.type==='depart')activate('voyage');updateMissionUI();}catch(error){$('#mission-notice').textContent=error.message;}}
 $('#mission-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
+
+function expeditionAction(event){try{if(event.type==='home'){expeditionView.targetHome();return;}if(event.type==='abort'){showDialog('<div class="dialog-content"><h2 id="detail-title">표본을 반납하고 철수할까요?</h2><p>철수하면 가방의 표본을 반납하고 보상 없이 귀환합니다. 보급 소진 시 구조 회수는 채집 수량의 절반을 보존합니다.</p><button type="button" class="gold-btn" id="confirm-abort">철수 확정</button></div>');$('#confirm-abort').addEventListener('click',()=>{campaign.expeditionCommand({type:'abort'});closeDialog();persistence.schedule();updateMap();});return;}
+ if(event.type==='interact'){const s=campaign.expedition;if(!s)throw Error('원정이 없습니다');const l=createLevel(s.levelSeed,s.destinationId),n=l.nodes.find(n=>s.scannedIds.includes(n.id)&&!s.collectedIds.includes(n.id)&&Math.abs(s.player.x-n.x)+Math.abs(s.player.y-n.y)<=1);if(!n)throw Error('표본 가까이에서 스캔을 마치세요');event={type:'collect',id:n.id};}campaign.expeditionCommand(event);$('#expedition-notice').textContent='탐사 행동을 반영했습니다.';persistence.schedule();updateMap();}catch(error){$('#expedition-notice').textContent=error.message;}}
+$('#expedition-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
