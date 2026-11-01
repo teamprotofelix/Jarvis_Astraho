@@ -1,3 +1,4 @@
+import {jobsFor} from './research/facility-jobs.js';
 import {behaviors,stateLabels} from './crew/behaviors.js';
 import {createRandom,selectNextActivity,createLife} from './crew/utility.js';
 import {modules, crew} from './world-data.js';
@@ -15,7 +16,7 @@ export function routeBetween(from,to){
  return points.filter((p,i)=>!i||distance(p,points[i-1])>.01).slice(1);
 }
 export function createCrewSimulation({seed=20261031}={}){
- const random=createRandom(seed);
+ const random=createRandom(seed);let facilities={},project=null;
  const members=crew.map((data,i)=>({data,room:data.route[0],target:data.route[0],queued:null,routeIndex:0,phase:'활동',pos:coords(data.route[0]),path:[],pause:3+i*1.5,activityIndex:i%3,direction:0,life:createLife(i)}));
  const events=[];let elapsed=0,serial=0;
  const record=(m,text)=>{if(events.some(e=>e.person===m.data.id&&e.text===text&&elapsed-e.time<1))return;events.unshift({id:++serial,time:elapsed,person:m.data.id,text});if(events.length>12)events.pop();};
@@ -25,10 +26,10 @@ export function createCrewSimulation({seed=20261031}={}){
  function requestTravel(id,target){const m=members.find(p=>p.data.id===id);if(!m||!rooms.has(target))return false;if(m.phase==='이동')m.queued=target;else travel(m,target);return true;}
  function interact(id){const m=members.find(m=>m.data.id===id);if(!m||m.phase==='이동'||m.life.state==='talk')return false;startAction(m,{id:m.data.id+'-talk',state:'talk',prop:'conversation-bubble',label:'짧은 안부 나누기',duration:6});return true;}
  function update(seconds){const dt=Number.isFinite(seconds)?Math.min(Math.max(seconds,0),.08):0;if(!dt)return;elapsed+=dt;
-  for(const m of members){const life=m.life;life.energy=Math.max(0,Math.min(100,life.energy+(life.state==='rest'?1.6:life.state==='walk'?-.08:-.32)*dt));
+  for(const m of members){const life=m.life;life.energy=Math.max(0,Math.min(100,life.energy+(life.state==='rest'?1.6+(facilities.bio_dome ? .4 : 0):life.state==='walk'?-.08:-.32)*dt));
    if(m.phase!=='이동'){
     life.remaining=Math.max(0,life.remaining-dt);m.pause=life.remaining;
-    if(life.remaining===0){if(life.state!=='idle')life.lastAction=life.actionId;const job=selectNextActivity(m,{elapsed,members},()=>random.next());m.routeIndex=(m.routeIndex+1)%m.data.route.length;m.activityIndex=(m.activityIndex+1)%3;if(job.room===m.room)startAction(m,job);else travel(m,job.room,job);}continue;
+    if(life.remaining===0){if(life.state!=='idle')life.lastAction=life.actionId;const job=selectNextActivity(m,{elapsed,members,facilityJobs:jobsFor(m.data.id,facilities,project)},()=>random.next());m.routeIndex=(m.routeIndex+1)%m.data.route.length;m.activityIndex=(m.activityIndex+1)%3;if(job.room===m.room)startAction(m,job);else travel(m,job.room,job);}continue;
    }
    let budget=m.data.speed*160*dt;
    while(budget>0&&m.path.length){const p=m.path[0],dx=p.x-m.pos.x,dy=p.y-m.pos.y,d=distance(m.pos,p);m.direction=Math.abs(dx)>Math.abs(dy)?(dx<0?1:2):(dy<0?3:0);
@@ -44,7 +45,7 @@ export function createCrewSimulation({seed=20261031}={}){
    if(m.phase==='이동'&&!safe){m.pos=coords(m.room);m.target=m.room;m.path=[];m.phase='활동';m.pause=1;m.life=createLife(0,elapsed);m.life.remaining=1;record(m,`${m.data.name} · 저장 경로를 마지막 안전 공간으로 복구`);}
    if(m.phase==='활동'){m.pos=coords(m.room);m.path=[];m.target=m.room;}
   }}
- const getContext=m=>({room:m.room,state:m.life.state,target:m.target,start:m.life.start,remaining:m.life.remaining,energy:m.life.energy,queued:m.queued,lastAction:m.life.lastAction,preferredJobs:behaviors[m.data.id].map(a=>a.id),animation:m.life.animation,messageKey:m.life.messageKey});
- return {members,events,update,requestTravel,interact,snapshot,restore,getContext,get elapsed(){return elapsed;},get revision(){return serial;},getOccupants:id=>members.filter(m=>m.phase!=='이동'&&m.room===id),getDisplayRoom:m=>m.phase==='이동'?`${rooms.get(m.room).name} → ${rooms.get(m.target).name}`:rooms.get(m.room).name,getActivity:m=>`${stateLabels[m.life.state]} · ${m.life.label}`};
+ const getContext=m=>({room:m.room,state:m.life.state,target:m.target,start:m.life.start,remaining:m.life.remaining,energy:m.life.energy,queued:m.queued,lastAction:m.life.lastAction,preferredJobs:[...behaviors[m.data.id],...jobsFor(m.data.id,facilities,project)].map(a=>a.id),animation:m.life.animation,messageKey:m.life.messageKey});
+ return {setFacilities(levels,active=null){facilities={...levels};project=active;},members,events,update,requestTravel,interact,snapshot,restore,getContext,get elapsed(){return elapsed;},get revision(){return serial;},getOccupants:id=>members.filter(m=>m.phase!=='이동'&&m.room===id),getDisplayRoom:m=>m.phase==='이동'?`${rooms.get(m.room).name} → ${rooms.get(m.target).name}`:rooms.get(m.room).name,getActivity:m=>`${stateLabels[m.life.state]} · ${m.life.label}`};
 }
 export const canonNote='위치·시간·상태와 새로운 일화는 아스트라호의 공개용 창작 시뮬레이션입니다.';

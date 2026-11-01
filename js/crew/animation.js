@@ -1,7 +1,7 @@
 import {stateLabels} from './behaviors.js';
 // Composite the existing walking sheet with independent props; never invent action-sheet cells.
 export function renderCrewAction(element,member,elapsed,{motion=true,quality='high'}={}){
- const life=member.life;if(!life)return;element.dataset.state=life.state;element.title=`${member.data.name} · ${stateLabels[life.state]} · ${life.label}`;
+ const life=member.life;if(!life)return;element.dataset.state=life.state;element.dataset.action=life.actionId;element.title=`${member.data.name} · ${stateLabels[life.state]} · ${life.label}`;
  element.setAttribute('aria-label',element.title);
  let layer=element.querySelector('.life-prop');if(!layer){layer=document.createElement('span');layer.className='life-prop';layer.setAttribute('aria-hidden','true');const image=document.createElement('img');image.alt='';image.width=32;image.height=32;image.decoding='async';image.onload=()=>layer.classList.add('ready');image.onerror=()=>layer.classList.remove('ready');layer.append(image);element.append(layer);const fx=document.createElement('span');fx.className='life-fx';fx.setAttribute('aria-hidden','true');element.append(fx);}
  const prop=life.state==='walk'?null:life.prop;layer.hidden=!prop;
