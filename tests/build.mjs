@@ -31,3 +31,7 @@ const expeditionArt=JSON.parse(read('assets/expedition-art-manifest.json'));
 assert.ok(expeditionArt.assets.length>=7&&expeditionArt.assets.length<=35);
 for(const art of expeditionArt.assets){const b=readFileSync(new URL(art.path,root)),info=webpInfo(b);assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.ok(b.length<350000);assert.deepEqual(info,{width:art.width,height:art.height,alpha:art.alpha},art.path);if(art.path.includes('/fx/')){assert.equal(info.width,1152);assert.equal(info.height,192);}}
 console.log(`Expedition art OK: ${expeditionArt.assets.length} selected WebP, ${expeditionArt.assets.reduce((n,a)=>n+a.bytes,0)} bytes; original procedural illustration.`);
+
+const storyArt=JSON.parse(read('assets/story-art-manifest.json'));assert.equal(storyArt.assets.length,27);
+for(const art of storyArt.assets){const b=readFileSync(new URL(art.path,root)),info=webpInfo(b);assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.ok(b.length<=512000,art.path);assert.equal(info.width,art.width);assert.equal(info.height,art.height);}
+console.log(`Story art OK: ${storyArt.assets.length} WebP, ${storyArt.assets.reduce((n,a)=>n+a.bytes,0)} bytes; full scenes only on demand.`);

@@ -1,0 +1,248 @@
+{
+  "provenance": "New compositions based on five prior Astraho originals; not newly text-to-image generated. Symbols independently authored.",
+  "assets": [
+    {
+      "path": "assets/story/scenes/captains-choice.webp",
+      "sha256": "bdbd332b85ed8373b229a02587e3c1334b6970622aa443814ed4ff530615f6cc",
+      "bytes": 373634,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/memory-echo.webp",
+      "sha256": "f1a0cb13e9ea19c12caf3f394b0aa14a07b59980d9546110c9cf6fd45ddd76d3",
+      "bytes": 409134,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/quiet-kindness.webp",
+      "sha256": "835e4a673d8e71d8cf1df68e03fe025ce8f257a7c07b51a14110924cb434e9a9",
+      "bytes": 350604,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/rescue-or-boundary.webp",
+      "sha256": "f47b4636f698a281548e4e125e295ad4678e88f83ad7c25ff8038f31aa0b3392",
+      "bytes": 356338,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/return-to-the-ark.webp",
+      "sha256": "c239d68edc8be18c01d5a823c1d0e0df64b94ab89e01e4371e35a1c5708ada2d",
+      "bytes": 294226,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/seed-of-the-ark.webp",
+      "sha256": "decb4fe8cdf1342e916712d823313fea84766a9af231b7b0b6d02df1ace58181",
+      "bytes": 433504,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/skulds-prototype.webp",
+      "sha256": "0adf5fc316a0f9a695939b2155fc277a2dbe832ee199a9bdf274e032d6484291",
+      "bytes": 380992,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/the-unanswered-invitation.webp",
+      "sha256": "3bafc715667b84993cd031f6811e23e21bfe6d6559e9eed3bda225dcc61ee25c",
+      "bytes": 297146,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/scenes/unidentified-signal.webp",
+      "sha256": "a40d1c11914d81ab97b8fd94700ec55347982d5ad316315c16ac4fd61dedaba0",
+      "bytes": 308740,
+      "width": 1920,
+      "height": 1080,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/symbols/archive.webp",
+      "sha256": "c3cc59a0d69eaee0fd1ef2a636f9698f9099ba3ce4d1d0de5ffbd004c71a4935",
+      "bytes": 14384,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/choice.webp",
+      "sha256": "bdfa192978d714cb597e24e38ccd2f9fec0ec8de4bc2c90963fe471fcfd5b1d0",
+      "bytes": 16024,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/consent.webp",
+      "sha256": "28a5b24df1a0e929a7c843c33b6d38f1a49703ae223d8322a3c7a7dbddce9af9",
+      "bytes": 19224,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/distress.webp",
+      "sha256": "d1f489c6d83a078464eb1e4dd9d229e91a33105e0a3ff74c1fd605f7d451b433",
+      "bytes": 17500,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/garden.webp",
+      "sha256": "c64117b8365d60769caec10e17e33103e2cd586267398ce41edbbe4222bd86c2",
+      "bytes": 17192,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/home.webp",
+      "sha256": "0de8f178a107a38f4481ec92cf608b920df7b5470b55c6078ff9fa5853b4f94f",
+      "bytes": 16978,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/observe.webp",
+      "sha256": "f39bad56c5936920850183e41280a84828b41834709c9d46a4738aca5e1ff079",
+      "bytes": 18156,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/protect.webp",
+      "sha256": "7d66d2ada84433e56e0813163cf736bc30d8f97895de465dd12d0e00b72c762a",
+      "bytes": 16986,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/symbols/repair.webp",
+      "sha256": "b7652905a96d52da3db39b8ea05ef2d2b64fb4cb4d86a5ecb4fb5d1dc217382d",
+      "bytes": 19048,
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/story/thumbs/captains-choice.webp",
+      "sha256": "0acb8ddeae9affd699dae340b9a39ce99fd6cb9d6a12f4885f7de73fd5d96267",
+      "bytes": 109976,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/memory-echo.webp",
+      "sha256": "d8fd0584cbd950b910096fcb527600432eaa06b46532e5deec2827f205de4a8f",
+      "bytes": 122268,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/quiet-kindness.webp",
+      "sha256": "fb54e644d92b5db2b30f4278aacedbb34c935a304e95db13629f871cc9f5d069",
+      "bytes": 104428,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/rescue-or-boundary.webp",
+      "sha256": "c2b58d3c8f19e06498d852482902c41a4c05d1729e7710731f407df3ca4d2ff5",
+      "bytes": 104450,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/return-to-the-ark.webp",
+      "sha256": "8065fa48c6dc6bd43608c668b62f9da1d700dc203f6f12774cea85caacea5a78",
+      "bytes": 84728,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/seed-of-the-ark.webp",
+      "sha256": "e90d07cecc9968858aff1ef64d4a80d1aee11db1c06e3cfe906fd9bf87204bfd",
+      "bytes": 129526,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/skulds-prototype.webp",
+      "sha256": "16375332d4e575966d07c5fad6c9f046ae69d3c8e8f84c4c3fd4bea593aa1ecb",
+      "bytes": 114760,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/the-unanswered-invitation.webp",
+      "sha256": "f9464bf7f6b1a53ccf849d2a5b8158e309ac9910c301b84608b9fabd605a6cd2",
+      "bytes": 83302,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    },
+    {
+      "path": "assets/story/thumbs/unidentified-signal.webp",
+      "sha256": "d25cf72a988ff2dcea9fb8dbe705bdcfd179daead28198725aa636569121297b",
+      "bytes": 85634,
+      "width": 960,
+      "height": 540,
+      "mode": "RGB",
+      "provenance": "new composition from previously generated Astraho art + custom authored effects"
+    }
+  ]
+}

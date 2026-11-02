@@ -46,3 +46,7 @@ schema2 + `expedition`(nullable compact player/supply/scanned/collected/visited/
 schema3 + `inventory:{counts}` + `research:{unlocked,active}` + `construction:{clock,sequence,revision,transactionIds,levels,active,events}`. resources 6종 0~999, 알려진 시설 4종 level 0/1, 연구/건설 동시 슬롯 각각 최대 1개, 거래 ID 최근 64개와 단조 sequence, 시설 이벤트 최대 24개다. v3의 기존 rewardLedger.totals는 최초 inventory로 한 번 복사하며 이후 보상 인도 시에만 inventory를 증가시킨다. v1/v2는 순서대로 기본 필드를 추가한다. 모든 migration은 원본 복사/이전 단계 검증 후 수행한다.
 
 연구 해금과 선행 시설, active 작업/남은 시간, 시설을 사용하는 승무원의 알려진 actionId/task, 임무와 보상 원장을 교차 검증한다. 거래 nonce와 단조 번호로 오래된 재전송도 다시 차감/제작되지 않는다. 계정/서버 없이 작동하는 로컬 저장이며 사용자가 직접 수정한 JSON의 정당한 값까지 막는 anti-cheat는 아니다.
+
+## PR7 schema 5
+
+schema4 + story. 이전 v1~v4는 동일 캠페인·승무원/RNG·항해·원정·원장·재고·연구·시설을 유지한 복사본에 미진행 이야기 기본값을 추가한다. story의 9개 불변 event/trigger와 27개 choice, FIFO sequence, sourceId, simTime, 발화 분기 flag와 journal 참조를 검사한다. 결정 9/후속 기록 9 이내이며 모든 결정은 보존한다. 이미 완료한 v4 진행은 명시적 기록 검토를 통해 새 선택을 시작한다. 과거의 선택을 자동 생성하지 않는다.

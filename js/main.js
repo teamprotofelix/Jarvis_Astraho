@@ -1,3 +1,5 @@
+import {createStoryPanel,storyDialog} from './views/story-panel.js';
+import {storyGreeting} from './story/catalog.js';
 import {createConstructionPanel,updateHeroUpgrades,roomUpgradeMarkup} from './views/construction-panel.js';
 import {createExpeditionView} from './views/expedition-view.js';
 import {createLevel} from './expedition/level.js';
@@ -17,6 +19,7 @@ const $=s=>document.querySelector(s);
 const roomMap=new Map(modules.map(m=>[m.id,m]));
 const sim=createCrewSimulation();
 const campaign=createCampaign();
+const storyPanel=createStoryPanel($('#story-panel'),{open:openStory,review:reviewStory});
 const constructionPanel=createConstructionPanel($('#construction-panel'),projectCommand);
 const missionBoard=createMissionBoard($('#mission-board'),missionCommand);
 const expeditionView=createExpeditionView($('#expedition-root'),expeditionAction);
@@ -37,6 +40,7 @@ function buildMap(){
  $('#statuses').innerHTML=[['세계수 공명','안정'],['항로 분석','관측 중'],['생활 환경','정상']].map(([label,value])=>`<div class="status-row"><div><span>${label}</span><b>${value}</b></div><div class="status-track"><i style="width:96%;background:var(--mint)"></i></div></div>`).join('');
 }
 function updateMap(){
+ $('#story-notification').textContent=`새 이야기 ${campaign.story.pending.length}`;if(activeView==='story')storyPanel.render(campaign.story);
  sim.setFacilities(campaign.construction.levels,campaign.construction.active||campaign.research.active);updateHeroUpgrades($('#hero-upgrades'),campaign.construction.levels,campaign.construction.active);if(activeView==='research')constructionPanel.render(campaign.inventory,campaign.research,campaign.construction,{conflicted:!loading&&persistence.conflicted});
  if(!loading){updateMissionUI();expeditionView.render(campaign.expedition,campaign.rewardLedger,{quality,motion:!paused&&!blurred&&!document.hidden&&!reduced});expeditionView.pause(paused||blurred||document.hidden||!$('#dialog-backdrop').hidden);}
  living.render(sim,{levels:campaign.construction.levels,pending:campaign.construction.active,selected,zoom,motion:!paused&&!blurred&&!document.hidden&&!reduced,following});
@@ -62,9 +66,9 @@ function selectPerson(id){if(!crew.some(p=>p.id===id))return;selected=id;talkInd
 function centerPerson(){const m=member(),scroll=activeView==='living'?$('#living-scroll'):$('#map-scroll'),stage=activeView==='living'?$('#living-stage'):$('#map-stage');if(!scroll||!stage)return;scroll.scrollLeft=(m.pos.x/1200)*stage.clientWidth-scroll.clientWidth/2;}
 function setFollowing(value){following=value;$('#living-follow').setAttribute('aria-pressed',String(value));$('#follow-person').classList.toggle('active',value);$('#follow-person').setAttribute('aria-pressed',String(value));$('#follow-person').textContent=value?'따라가기 중':'따라가기';if(value)centerPerson();}
 function setZoom(value){zoom=Math.max(.65,Math.min(1.4,value));$('#map-stage').style.width=1200*zoom+'px';$('#zoom-value').textContent=Math.round(zoom*100)+'%';if(following)centerPerson();}
-function activate(view){activeView=view;living.setActive(view==='living');expeditionView.setActive(view==='expedition');flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view;el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
+function activate(view){activeView=view;living.setActive(view==='living');expeditionView.setActive(view==='expedition');flight.clear();document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===`${view}-view`));document.querySelectorAll('[data-view]').forEach(el=>{const on=el.dataset.view===view||(view==='story'&&el.matches('.top-nav [data-view=journal]'));el.classList.toggle('active',on);if(on)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});if(view==='voyage')flight.resize();syncPause();}
 function showDialog(content){if($('#dialog-backdrop').hidden)returnFocus=document.activeElement;$('#dialog-body').innerHTML=content;$('#dialog-backdrop').hidden=false;document.body.classList.add('dialog-open');$('.app-shell').inert=true;$('#dialog-close').focus();syncPause();}
-function closeDialog(){if($('#dialog-backdrop').hidden)return;$('#dialog-backdrop').hidden=true;currentRoom=null;document.body.classList.remove('dialog-open');$('.app-shell').inert=false;syncPause();if(returnFocus?.isConnected)returnFocus.focus();}
+function closeDialog(){if($('#dialog-backdrop').hidden)return;$('#dialog-backdrop').hidden=true;currentRoom=null;document.body.classList.remove('dialog-open');$('.app-shell').inert=false;syncPause();if(returnFocus?.isConnected)returnFocus.focus();else if(activeView==='story')$('#story-title').focus();}
 function roomDialog(id){const m=roomMap.get(id);if(!m)return;currentRoom=id;const list=sim.getOccupants(id);
  showDialog(`<div class="dialog-image room-scene"><img src="${roomScene(id,quality)}" decoding="async" alt="${m.name} 내부">${roomUpgradeMarkup(id,campaign.construction.levels,campaign.construction.active,true)}<div class="room-residents">${list.map((p,i)=>`<button type="button" data-room-person="${p.data.id}" style="left:${roomStagePosition(i,list.length).x}%;top:${roomStagePosition(i,list.length).y}%" aria-label="${p.data.name}와 대화">${sprite(p.data.id)}<span class="resident-name">${p.data.name}</span></button>`).join('')}</div><div class="dialog-image-title"><span>${m.en}</span><h2 id="detail-title">${m.name}</h2></div></div><div class="dialog-content"><div class="dialog-meta"><span>${m.role}</span><span>ROOM / ${String(modules.indexOf(m)+1).padStart(2,'0')}</span></div><p class="dialog-lead">${esc(m.desc)}</p><p>${esc(m.detail)}</p><div class="dialog-chipset"><strong>지금 이곳</strong><span>${list.length?list.map(p=>esc(p.data.name)).join(' · '):'조용한 빈 공간'}</span></div><div class="room-actionbar"><button type="button" class="gold-btn" data-room-action="${id}">${roomActions[id][0]}</button><button type="button" class="outline-btn" data-visit="${id}">함장 이동 예약</button>${id==='bridge'?'<button type="button" class="outline-btn" data-launch>항해 조종하기 ↗</button>':''}</div><p id="room-response" class="scene-response" aria-live="polite">공간의 활동을 선택하거나, 체류 중인 승무원에게 말을 걸어보세요.</p><div class="dialog-controls"><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+14)%15].id}">← 이전 공간</button><button class="outline-btn" data-nav-room="${modules[(modules.indexOf(m)+1)%15].id}">다음 공간 →</button></div></div>`);
  for(const person of list)renderCrewAction($(`[data-room-person="${person.data.id}"]`),person,sim.elapsed,{motion:false,quality});
@@ -79,14 +83,14 @@ function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$
 function setManual(value,focus=true){flight.setManual(value);for(const [id,on] of [['auto-btn',!value],['manual-btn',value]]){$('#'+id).classList.toggle('active',on);$('#'+id).setAttribute('aria-pressed',String(on));}$('#manual-pad').hidden=!value;if(focus)$('#flight-wrap').focus();}
 function animate(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){requestAnimationFrame(animate);return;}last=now;
  const running=!loading&&!paused&&!blurred&&!document.hidden&&$('#dialog-backdrop').hidden;
- if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision)persistence.schedule();if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance,expeditionView.input(campaign.expedition),{expeditionActive:activeView==='expedition'});if(campaign.revision!==missionRevision)persistence.schedule();}
+ if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision){campaign.observeCrew(sim.members,sim.revision);persistence.schedule();}if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance,expeditionView.input(campaign.expedition),{expeditionActive:activeView==='expedition'});if(campaign.revision!==missionRevision)persistence.schedule();}
  if(now-lastUI>160){updateMap();lastUI=now;}requestAnimationFrame(animate);
 }
 $('#motion-toggle').addEventListener('click',()=>{paused=!paused;syncPause();});
 $('#sim-speed').addEventListener('click',()=>{speed=speed===1?2:speed===2?4:1;$('#sim-speed').textContent=speed+'× 생활';});
 $('#zoom-in').addEventListener('click',()=>setZoom(zoom+.15));$('#zoom-out').addEventListener('click',()=>setZoom(zoom-.15));$('#map-fit').addEventListener('click',()=>{setFollowing(false);setZoom(Math.max(.65,Math.min(1,$('#map-scroll').clientWidth/1200)));});
 $('#follow-person').addEventListener('click',()=>setFollowing(!following));$('#visit-person').addEventListener('click',()=>{const m=member();roomDialog(m.phase==='이동'?m.target:m.room);});
-$('#talk-person').addEventListener('click',()=>{sim.interact(selected);updateMap();const lines=conversations[selected];$('#talk-response').textContent=lines[talkIndex++%lines.length];});
+$('#talk-person').addEventListener('click',()=>{sim.interact(selected);updateMap();const greeting=storyGreeting(campaign.story,selected),lines=[...(greeting?[greeting]:[]),...conversations[selected]];$('#talk-response').textContent=lines[talkIndex++%lines.length];});
 for(const event of ['wheel','touchstart'])$('#map-scroll').addEventListener(event,()=>{if(following)setFollowing(false);},{passive:true});
 $('#map-scroll').addEventListener('keydown',e=>{if(e.key.startsWith('Arrow')&&following)setFollowing(false);});
 $('#auto-btn').addEventListener('click',()=>setManual(false));$('#manual-btn').addEventListener('click',()=>setManual(true));$('#next-sector').addEventListener('click',()=>flight.next());$('#journal-filter').addEventListener('change',renderJournals);
@@ -97,7 +101,7 @@ document.addEventListener('click',event=>{const el=event.target.closest('button'
  if(el.dataset.navRoom){roomDialog(el.dataset.navRoom);return;}
  if(el.dataset.journal!==undefined){journalDialog(+el.dataset.journal);return;}
  if(el.dataset.roomAction){$('#room-response').textContent=roomActions[el.dataset.roomAction][1];return;}
- if(el.dataset.roomPerson){sim.interact(el.dataset.roomPerson);const m=sim.members.find(m=>m.data.id===el.dataset.roomPerson);renderCrewAction(el,m,sim.elapsed,{motion:false,quality});updateMap();$('#room-response').textContent=conversations[el.dataset.roomPerson][0];return;}
+ if(el.dataset.roomPerson){sim.interact(el.dataset.roomPerson);const m=sim.members.find(m=>m.data.id===el.dataset.roomPerson);renderCrewAction(el,m,sim.elapsed,{motion:false,quality});updateMap();$('#room-response').textContent=storyGreeting(campaign.story,el.dataset.roomPerson)||conversations[el.dataset.roomPerson][0];return;}
  if(el.dataset.visit){const target=el.dataset.visit;sim.requestTravel('e',target);closeDialog();selectPerson('e');setFollowing(true);$('#talk-response').textContent=roomMap.get(target).name+'(으)로 이동을 예약했습니다.';return;}
  if(el.hasAttribute('data-launch')){closeDialog();activate('voyage');}
 });
@@ -146,7 +150,7 @@ $('#living-root').addEventListener('touchstart',()=>setFollowing(false),{passive
 $('#living-root').addEventListener('wheel',()=>setFollowing(false),{passive:true});
 
 function renderLifeInfo(m){const l=m.life,next=m.queued?roomMap.get(m.queued).name:l.task?l.task.label:l.state==='walk'?'목적지 도착 후 활동':'역할·피로에 따라 다음 일과 선택';const html=[['현재 행동',stateLabels[l.state]],['목적지',roomMap.get(m.target).name],['진행 중인 일',l.label+(l.state==='walk'?'':` · ${Math.ceil(l.remaining)}초`)],['곧 할 일',next],['생활 에너지',Math.round(l.energy)+' / 100 (플레이용 지표)']].map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');$('#person-life').innerHTML=html;$('#living-life').innerHTML=html;}
-$('#living-talk').addEventListener('click',()=>{sim.interact(selected);$('#living-response').textContent=conversations[selected][0];updateMap();});
+$('#living-talk').addEventListener('click',()=>{sim.interact(selected);$('#living-response').textContent=storyGreeting(campaign.story,selected)||conversations[selected][0];updateMap();});
 $('#living-visit').addEventListener('click',()=>{const m=member();roomDialog(m.phase==='이동'?m.target:m.room);});
 
 $('#living-root').addEventListener('keydown',event=>{if(event.key.startsWith('Arrow')&&following)setFollowing(false);});
@@ -161,3 +165,8 @@ $('#expedition-pause').addEventListener('click',()=>{paused=!paused;syncPause();
 
 function projectCommand(event){try{if(persistence.conflicted)throw Error('다른 탭의 변경을 먼저 새로고침하세요');const applied=campaign.transaction(event);$('#research-notice').textContent=applied?'스쿨드가 작업을 시작했습니다. 자원과 진행을 저장합니다.':'이미 처리한 거래입니다.';persistence.schedule();updateMap();}catch(error){$('#research-notice').textContent=error.message;}}
 $('#research-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
+
+function openStory(eventId=null){const content=storyDialog(campaign.story,{quality,width:innerWidth,eventId});if(!content){$('#story-notice').textContent='현재 열 수 있는 선택이 없습니다.';return;}showDialog(content);const image=$('.story-scene>img'),id=eventId||campaign.story.pending[0]?.eventId;if(image){const fallback=[`./assets/story/thumbs/${id}.webp`,sceneSrc('bridge')];image.onerror=()=>{const next=fallback.shift();if(next)image.src=next;else{image.onerror=null;image.hidden=true;}};}}
+function reviewStory(eventId){try{campaign.reviewStory(eventId);$('#story-notice').textContent='실제 진행 조건에 맞는 기록을 검토했습니다.';persistence.schedule();storyPanel.render(campaign.story);updateMap();}catch(error){$('#story-notice').textContent=error.message;}}
+$('#story-notification').addEventListener('click',()=>{activate('story');$('#story-title').focus({preventScroll:true});});
+document.addEventListener('click',event=>{const b=event.target.closest('[data-story-choice]');if(!b)return;try{if(persistence.conflicted)throw Error('다른 탭의 변경을 새로고침한 뒤 선택하세요');campaign.chooseStory({eventId:b.dataset.storyEvent,choiceId:b.dataset.storyChoice,eventSequence:Number(b.dataset.storySequence)});closeDialog();$('#story-notice').textContent='선택과 대화 분기를 아카식에 기록했습니다. 후속 실제 게임 전이에서 새 기록이 이어집니다.';persistence.schedule();updateMap();$('#story-title').focus({preventScroll:true});}catch(error){$('#story-notice').textContent=error.message;}});
