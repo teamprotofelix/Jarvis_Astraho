@@ -1,4 +1,4 @@
-# ASTRAHO WORLD — The Living Ark v1.8
+# ASTRAHO WORLD — The Living Ark v1.9
 
 아스트라호의 공간·승무원·항해를 탐험하는 정적 웹사이트입니다. 최신 정전의 지휘 관계를 유지하면서 공개용으로 새로 창작한 생활 장면을 보여 줍니다.
 
@@ -6,7 +6,7 @@
 - **ROOM**: 각 모듈 내부 이미지, 현재 체류자와의 짧은 대화, 15개 공간별 활동, 함장 이동 예약. 이동 중 예약은 현재 구간을 마친 뒤 실행됩니다.
 - **VOYAGE**: 중앙 세계수를 품은 방주, 9개 우주 배경, 다층 별빛, AUTO/MANUAL, 방향키·WASD·터치 패드, 별빛 수집·운석 회피·보호막 재생. 진행은 IndexedDB에 저장되며 JSON으로 백업·복원합니다.
 - **JARVIS LOG**: 공개용 창작 항해일지 12편과 구역별 필터.
-- **PWA**: 기본 런타임 이미지·스크립트 95개 URL을 원자적으로 준비한 뒤 오프라인 사용. 업데이트는 사용자가 새로고침을 선택할 때 적용됩니다. 외부 폰트·CDN·로그인·LLM API·추적 스크립트가 없습니다.
+- **PWA**: 기본 런타임 이미지·스크립트 97개 URL을 원자적으로 준비한 뒤 오프라인 사용. 업데이트는 사용자가 새로고침을 선택할 때 적용됩니다. 외부 폰트·CDN·로그인·LLM API·추적 스크립트가 없습니다.
 
 ## 실행과 검사
 
@@ -53,7 +53,7 @@ E는 방향과 가치를 결정합니다. 미스티아 서아는 인적 지휘·
 
 - **CREW LIFE**: 역할·일정·피로에 따른 9개 행동 상태, seed가 저장되는 결정형 시뮬레이션, 소품 10종·6프레임 효과 2종, 현재/다음 일과·생활 에너지 패널. 생활 기록은 실제 전이에서만 생성하고 최근 12개를 보관합니다. [QA_PR3](docs/qa/QA_PR3.md), [행동 계약](docs/CREW_LIFE.md).
 
-이 버전은 2.0 로드맵의 PR0~PR7까지 구현합니다. PWA 아이덴티티·최종 성능 패스(PR8)는 후속입니다.
+이 버전은 2.0 로드맵의 PR0~PR8을 구현합니다. 물리 기기 설치·Safari/iOS 검증은 별도이며, 단계별 QA의 확인 범위를 참고하세요.
 
 - **MISSIONS (PR4)**: 여섯 신호의 발견·스캔·접근 항행·귀환, 세 원정 목적지, 초대 미확인 영역 진입 거부. 실제 비행 거리로만 접근하며 풍경 전환으로 완료하지 않습니다. 저장 schema 2, v1 무손실 migration 및 다중 탭 저장 충돌 검사. [PR4 QA](docs/qa/QA_PR4.md).
 
@@ -66,3 +66,7 @@ E는 방향과 가치를 결정합니다. 미스티아 서아는 인적 지휘·
 선택 통합 브라우저 검사: 로컬 HTTP 서버 실행 후 `python tests/campaign-browser.py http://127.0.0.1:8000` (Python Playwright/Pillow와 시스템 Chromium 필요). 모델에서 표본을 획득한 fixture도 별도로 생성해 실제 첫 플레이와 구분하여 사용합니다.
 
 - **LIVING STORIES (PR7)**: 실제 스캔/귀환/시설/일과에 연결된 9개 이야기, 27개 선택, 즉시 결과·분기 대사·후속 전이 기록. 기존 고정 일지 12편과 별도 아카식을 제공합니다. schema 5가 v1~v4를 보존형 migration합니다. [PR7 QA](docs/qa/QA_PR7.md).
+
+- **PWA QUALITY (PR8)**: 첨부 원본 아이콘 5개, 사용자 승인 업데이트·오프라인 캐시 97개 URL, 전체 화면 일시정지, 비활성 화면 DOM 갱신·중복 저장 절감. [PR8 QA](docs/qa/QA_PR8.md), [PWA 계약](docs/PWA_QUALITY.md). 선택 브라우저 검사 `python tests/quality-browser.py`, 실제 20분 측정 `python tests/perf-browser.py`는 로컬 서버와 Python Playwright/Pillow·시스템 Chromium이 필요합니다.
+
+PWA 업데이트 단독 재현: `python tests/pwa-update-browser.py` (PR7 commit이 있는 로컬 git history 사용, 자체 localhost 서버). 이야기 저장 충돌/되돌리기: `python tests/story-tabs-browser.py`, `python tests/story-import-browser.py`.

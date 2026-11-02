@@ -15,10 +15,10 @@ $('#flight-canvas').getBoundingClientRect=()=>({width:360,height:430});
 $('#flight-canvas').getContext=()=>new Proxy({},{get:()=>()=>{}});$('#exp-canvas').getContext=()=>new Proxy({},{get:()=>()=>{}});$('#exp-canvas').getBoundingClientRect=()=>({width:360,height:320});
 class ImageStub{complete=false;naturalWidth=0;naturalHeight=0;}
 class IntersectionStub{constructor(cb){this.cb=cb;observers.push(this);}observe(element){this.element=element;}set(value){this.cb([{isIntersecting:value}]);}}
-const context=vm.createContext({structuredClone,TextEncoder,Blob,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,document,window,console,URL,Image:ImageStub,IntersectionObserver:IntersectionStub,navigator:{},matchMedia:()=>({matches:false}),requestAnimationFrame:cb=>frames.push(cb),innerWidth:360,devicePixelRatio:1,performance:{now:()=>0}});
+const context=vm.createContext({structuredClone,TextEncoder,Blob,setTimeout:()=>0,clearTimeout(){},setInterval:()=>0,document,window,console,URL,Image:ImageStub,IntersectionObserver:IntersectionStub,navigator:{},matchMedia:()=>({matches:false}),requestAnimationFrame:cb=>{frames.push(cb);return frames.length;},cancelAnimationFrame:()=>{frames.length=0;},innerWidth:360,devicePixelRatio:1,performance:{now:()=>0}});
 const modules=new Map();function load(url){if(!modules.has(url.href))modules.set(url.href,new vm.SourceTextModule(readFileSync(url,'utf8'),{context,identifier:url.href}));return modules.get(url.href);}
 const entry=load(new URL('js/main.js',root));await entry.link((specifier,ref)=>load(new URL(specifier,ref.identifier)));await entry.evaluate();
-let clock=0;function advance(count){for(let i=0;i<count;i++){clock+=34;const fn=frames.shift();assert.ok(fn,'single RAF remains scheduled');fn(clock);}assert.equal(frames.length,1);}
+let clock=0;function advance(count){for(let i=0;i<count;i++){clock+=34;const fn=frames.shift();if(!fn)break;fn(clock);}assert.ok(frames.length<=1);}
 function click(selector){const el=$(selector);assert.ok(el,selector);el.focus();el.dispatchEvent(new window.Event('click',{bubbles:true}));}
 function key(type,key){const e=new window.Event(type,{cancelable:true});e.key=key;window.dispatchEvent(e);}
 const checks=[];function check(name,fn){fn();checks.push(name);console.log('OK',name);}

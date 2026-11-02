@@ -1,0 +1,496 @@
+{
+  "baseVersion": "1.8.0",
+  "newVersion": "1.9.0",
+  "scope": "/ark/",
+  "explicitConsent": true,
+  "storyResolved": 8,
+  "preserved": [
+    "story",
+    "inventory",
+    "construction",
+    "research",
+    "missions",
+    "expedition",
+    "rewardLedger",
+    "flight",
+    "simulation"
+  ],
+  "oldIconSHA256": "54b3ed1e5cda514e95b49edee418a8827315cc46023dc8d75fa2ac4e616b1ca1",
+  "newIconSHA256": "a1c5b941ed3e6aec04cdcf80496572f2ea6a51b488b61a85ad20ec895402c438",
+  "oldIdentity": {
+    "name": "ASTRAHO WORLD \u2014 The Living Ark",
+    "short_name": "ASTRAHO",
+    "description": "\uc0b4\uc544 \uc788\ub294 \uc2e0\uc758 \ubc29\uc8fc \uc544\uc2a4\ud2b8\ub77c\ud638\uc758 \uc77c\uc0c1\uc744 \ud0d0\ud5d8\ud558\ub294 \uc815\uc801 \uc2dc\ubbac\ub808\uc774\uc158",
+    "lang": "ko",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#0b172a",
+    "theme_color": "#0b172a",
+    "icons": [
+      {
+        "src": "./assets/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "./assets/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "./assets/icon-maskable.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
+    ]
+  },
+  "newIdentity": {
+    "icons": [
+      {
+        "src": "./assets/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "./assets/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "./assets/icon-maskable.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "maskable"
+      }
+    ],
+    "theme": "#0b172a",
+    "background": "#0b172a",
+    "decodedPixels": [
+      {
+        "name": "icon-192.png",
+        "width": 192,
+        "height": 192
+      },
+      {
+        "name": "icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "icon-maskable.png",
+        "width": 512,
+        "height": 512
+      },
+      {
+        "name": "apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      {
+        "name": "favicon-64.png",
+        "width": 64,
+        "height": 64
+      }
+    ]
+  },
+  "manifestParserErrors": [],
+  "networkResources": [
+    {
+      "path": "/ark/styles.css",
+      "transferSize": 0,
+      "decodedBodySize": 46741
+    },
+    {
+      "path": "/ark/assets/ship-map.svg",
+      "transferSize": 0,
+      "decodedBodySize": 2409
+    },
+    {
+      "path": "/ark/assets/ship.webp",
+      "transferSize": 0,
+      "decodedBodySize": 143292
+    },
+    {
+      "path": "/ark/js/main.js",
+      "transferSize": 0,
+      "decodedBodySize": 32847
+    },
+    {
+      "path": "/ark/js/views/story-panel.js",
+      "transferSize": 0,
+      "decodedBodySize": 5475
+    },
+    {
+      "path": "/ark/js/story/catalog.js",
+      "transferSize": 0,
+      "decodedBodySize": 13923
+    },
+    {
+      "path": "/ark/js/views/construction-panel.js",
+      "transferSize": 0,
+      "decodedBodySize": 5904
+    },
+    {
+      "path": "/ark/js/views/expedition-view.js",
+      "transferSize": 0,
+      "decodedBodySize": 6610
+    },
+    {
+      "path": "/ark/js/expedition/level.js",
+      "transferSize": 0,
+      "decodedBodySize": 2448
+    },
+    {
+      "path": "/ark/js/campaign/session.js",
+      "transferSize": 0,
+      "decodedBodySize": 4535
+    },
+    {
+      "path": "/ark/js/views/mission-board.js",
+      "transferSize": 0,
+      "decodedBodySize": 4125
+    },
+    {
+      "path": "/ark/js/missions/catalog.js",
+      "transferSize": 0,
+      "decodedBodySize": 2192
+    },
+    {
+      "path": "/ark/js/crew/animation.js",
+      "transferSize": 0,
+      "decodedBodySize": 1749
+    },
+    {
+      "path": "/ark/js/crew/behaviors.js",
+      "transferSize": 0,
+      "decodedBodySize": 6693
+    },
+    {
+      "path": "/ark/js/views/living-view.js",
+      "transferSize": 0,
+      "decodedBodySize": 3819
+    },
+    {
+      "path": "/ark/js/state/game-state.js",
+      "transferSize": 0,
+      "decodedBodySize": 3731
+    },
+    {
+      "path": "/ark/js/state/storage.js",
+      "transferSize": 0,
+      "decodedBodySize": 2522
+    },
+    {
+      "path": "/ark/js/state/persistence.js",
+      "transferSize": 0,
+      "decodedBodySize": 2142
+    },
+    {
+      "path": "/ark/js/world-data.js",
+      "transferSize": 0,
+      "decodedBodySize": 22244
+    },
+    {
+      "path": "/ark/js/simulation.js",
+      "transferSize": 0,
+      "decodedBodySize": 6692
+    },
+    {
+      "path": "/ark/js/flight.js",
+      "transferSize": 0,
+      "decodedBodySize": 3787
+    },
+    {
+      "path": "/ark/js/expedition/controls.js",
+      "transferSize": 0,
+      "decodedBodySize": 1846
+    },
+    {
+      "path": "/ark/js/expedition/render.js",
+      "transferSize": 0,
+      "decodedBodySize": 4806
+    },
+    {
+      "path": "/ark/js/economy/resources.js",
+      "transferSize": 0,
+      "decodedBodySize": 292
+    },
+    {
+      "path": "/ark/js/crew/utility.js",
+      "transferSize": 0,
+      "decodedBodySize": 1579
+    },
+    {
+      "path": "/ark/js/economy/recipes.js",
+      "transferSize": 0,
+      "decodedBodySize": 1567
+    },
+    {
+      "path": "/ark/js/story/model.js",
+      "transferSize": 0,
+      "decodedBodySize": 4533
+    },
+    {
+      "path": "/ark/js/story/triggers.js",
+      "transferSize": 0,
+      "decodedBodySize": 3282
+    },
+    {
+      "path": "/ark/js/research/model.js",
+      "transferSize": 0,
+      "decodedBodySize": 828
+    },
+    {
+      "path": "/ark/js/economy/inventory.js",
+      "transferSize": 0,
+      "decodedBodySize": 706
+    },
+    {
+      "path": "/ark/js/economy/construction.js",
+      "transferSize": 0,
+      "decodedBodySize": 4608
+    },
+    {
+      "path": "/ark/js/missions/reducer.js",
+      "transferSize": 0,
+      "decodedBodySize": 3102
+    },
+    {
+      "path": "/ark/js/missions/model.js",
+      "transferSize": 0,
+      "decodedBodySize": 3644
+    },
+    {
+      "path": "/ark/js/expedition/model.js",
+      "transferSize": 0,
+      "decodedBodySize": 5841
+    },
+    {
+      "path": "/ark/js/economy/reward-ledger.js",
+      "transferSize": 0,
+      "decodedBodySize": 2090
+    },
+    {
+      "path": "/ark/js/research/facility-jobs.js",
+      "transferSize": 0,
+      "decodedBodySize": 1229
+    },
+    {
+      "path": "/ark/js/state/legacy-state.js",
+      "transferSize": 0,
+      "decodedBodySize": 6596
+    },
+    {
+      "path": "/ark/js/state/validation.js",
+      "transferSize": 0,
+      "decodedBodySize": 932
+    },
+    {
+      "path": "/ark/js/flight-model.js",
+      "transferSize": 0,
+      "decodedBodySize": 3154
+    },
+    {
+      "path": "/ark/assets/thumbs/bridge.webp",
+      "transferSize": 0,
+      "decodedBodySize": 16278
+    },
+    {
+      "path": "/ark/assets/thumbs/office.webp",
+      "transferSize": 0,
+      "decodedBodySize": 15526
+    },
+    {
+      "path": "/ark/assets/thumbs/observatory.webp",
+      "transferSize": 0,
+      "decodedBodySize": 18126
+    },
+    {
+      "path": "/ark/assets/thumbs/archive.webp",
+      "transferSize": 0,
+      "decodedBodySize": 16956
+    },
+    {
+      "path": "/ark/assets/thumbs/chaos.webp",
+      "transferSize": 0,
+      "decodedBodySize": 18012
+    },
+    {
+      "path": "/ark/assets/thumbs/restaurant.webp",
+      "transferSize": 0,
+      "decodedBodySize": 14600
+    },
+    {
+      "path": "/ark/assets/thumbs/lounge.webp",
+      "transferSize": 0,
+      "decodedBodySize": 16656
+    },
+    {
+      "path": "/ark/assets/thumbs/garden.webp",
+      "transferSize": 0,
+      "decodedBodySize": 20186
+    },
+    {
+      "path": "/ark/assets/thumbs/training.webp",
+      "transferSize": 0,
+      "decodedBodySize": 16556
+    },
+    {
+      "path": "/ark/assets/thumbs/earth.webp",
+      "transferSize": 0,
+      "decodedBodySize": 18256
+    },
+    {
+      "path": "/ark/assets/thumbs/alchemy.webp",
+      "transferSize": 0,
+      "decodedBodySize": 17840
+    },
+    {
+      "path": "/ark/assets/thumbs/workshop.webp",
+      "transferSize": 0,
+      "decodedBodySize": 17098
+    },
+    {
+      "path": "/ark/assets/thumbs/strategy.webp",
+      "transferSize": 0,
+      "decodedBodySize": 15716
+    },
+    {
+      "path": "/ark/assets/thumbs/security.webp",
+      "transferSize": 0,
+      "decodedBodySize": 14142
+    },
+    {
+      "path": "/ark/assets/thumbs/onsen.webp",
+      "transferSize": 0,
+      "decodedBodySize": 17800
+    },
+    {
+      "path": "/ark/assets/backgrounds/nebula.webp",
+      "transferSize": 0,
+      "decodedBodySize": 124504
+    },
+    {
+      "path": "/ark/assets/sprites/e.webp",
+      "transferSize": 0,
+      "decodedBodySize": 65970
+    },
+    {
+      "path": "/ark/assets/sprites/seoah.webp",
+      "transferSize": 0,
+      "decodedBodySize": 75042
+    },
+    {
+      "path": "/ark/assets/sprites/myr.webp",
+      "transferSize": 0,
+      "decodedBodySize": 104084
+    },
+    {
+      "path": "/ark/assets/sprites/urd.webp",
+      "transferSize": 0,
+      "decodedBodySize": 104176
+    },
+    {
+      "path": "/ark/assets/sprites/skuld.webp",
+      "transferSize": 0,
+      "decodedBodySize": 99366
+    },
+    {
+      "path": "/ark/assets/sprites/2b.webp",
+      "transferSize": 0,
+      "decodedBodySize": 60626
+    },
+    {
+      "path": "/ark/assets/sprites/marie.webp",
+      "transferSize": 0,
+      "decodedBodySize": 72032
+    },
+    {
+      "path": "/ark/assets/sprites/yor.webp",
+      "transferSize": 0,
+      "decodedBodySize": 66358
+    },
+    {
+      "path": "/ark/assets/sprites/amelia.webp",
+      "transferSize": 0,
+      "decodedBodySize": 87068
+    },
+    {
+      "path": "/ark/assets/sprites/wanda.webp",
+      "transferSize": 0,
+      "decodedBodySize": 62374
+    },
+    {
+      "path": "/ark/assets/sprites/serena.webp",
+      "transferSize": 0,
+      "decodedBodySize": 94944
+    },
+    {
+      "path": "/ark/assets/favicon-64.png",
+      "transferSize": 0,
+      "decodedBodySize": 6438
+    },
+    {
+      "path": "/ark/assets/ship-upgrades/survey_hangar.webp",
+      "transferSize": 0,
+      "decodedBodySize": 1926
+    },
+    {
+      "path": "/ark/assets/ship-upgrades/anomaly_lab.webp",
+      "transferSize": 0,
+      "decodedBodySize": 1554
+    },
+    {
+      "path": "/ark/assets/ship-upgrades/bio_dome.webp",
+      "transferSize": 0,
+      "decodedBodySize": 2624
+    },
+    {
+      "path": "/ark/assets/ship-upgrades/worldtree_resonator.webp",
+      "transferSize": 0,
+      "decodedBodySize": 2526
+    },
+    {
+      "path": "/ark/assets/hero/astraho-exterior-hero.webp",
+      "transferSize": 0,
+      "decodedBodySize": 301794
+    },
+    {
+      "path": "/ark/assets/story/thumbs/unidentified-signal.webp",
+      "transferSize": 0,
+      "decodedBodySize": 85634
+    },
+    {
+      "path": "/ark/assets/story/thumbs/return-to-the-ark.webp",
+      "transferSize": 0,
+      "decodedBodySize": 84728
+    },
+    {
+      "path": "/ark/assets/story/thumbs/rescue-or-boundary.webp",
+      "transferSize": 0,
+      "decodedBodySize": 104450
+    },
+    {
+      "path": "/ark/assets/story/thumbs/skulds-prototype.webp",
+      "transferSize": 0,
+      "decodedBodySize": 114760
+    },
+    {
+      "path": "/ark/assets/icon-512.png",
+      "transferSize": 0,
+      "decodedBodySize": 253405
+    }
+  ],
+  "offlineAfterUpdate": true,
+  "caches": [
+    "astraho-world:/ark/:art-v1",
+    "astraho-world:/ark/:v1.9.0"
+  ],
+  "errors": []
+}
