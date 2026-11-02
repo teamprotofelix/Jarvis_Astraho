@@ -1,0 +1,61 @@
+{
+  "images": {
+    "initialFullScenes": 0,
+    "desktopHighFull": true,
+    "lowThumb": true,
+    "http200DecodeFailureAnd404ThumbFallback": true
+  },
+  "accessibility": {
+    "axNamedStoryFilter": true,
+    "dialogTabAndEscapeFocus": true,
+    "physicalScreenReaderTested": false
+  },
+  "layout": [
+    {
+      "width": 1440,
+      "height": 900,
+      "views": 8,
+      "noOverflow": true,
+      "toolbar44px": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "views": 8,
+      "noOverflow": true,
+      "toolbar44px": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "views": 8,
+      "noOverflow": true,
+      "toolbar44px": true
+    },
+    {
+      "width": 320,
+      "height": 700,
+      "views": 8,
+      "noOverflow": true,
+      "toolbar44px": true
+    }
+  ],
+  "canvasDPR3CappedAt2": {
+    "width": 2617,
+    "height": 1152,
+    "cssW": 1308.40625,
+    "cssH": 576
+  },
+  "pauseFramesStopped": true,
+  "futureImportPreserved": true,
+  "futureStoredRawPreserved": true,
+  "unavailable": {
+    "warning": "저장 불가 · 임시 모드 (기존 데이터 보존)",
+    "jsonBackupWorks": true
+  },
+  "quota": {
+    "warning": "저장 불가 · 임시 모드 / JSON 백업 권장",
+    "jsonBackupWorks": true
+  },
+  "pageErrors": []
+}

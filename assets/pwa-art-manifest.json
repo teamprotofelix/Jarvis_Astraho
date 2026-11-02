@@ -1,0 +1,50 @@
+{
+  "source": "User delivery 2026-11-02; exact PNG replacements; 1024 master intentionally not deployed.",
+  "assets": [
+    {
+      "path": "assets/icon-192.png",
+      "sha256": "21dea5dfc4b97ca075f4369b35f1012574cdfb7eda069c3ba014e2911d25d931",
+      "bytes": 44649,
+      "width": 192,
+      "height": 192,
+      "mode": "RGB",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/icon-512.png",
+      "sha256": "a1c5b941ed3e6aec04cdcf80496572f2ea6a51b488b61a85ad20ec895402c438",
+      "bytes": 253405,
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/icon-maskable.png",
+      "sha256": "6258efefe808ae3e170fe00747a9b48772faefbe64ac37ce11c40210f15b2d1a",
+      "bytes": 222929,
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/apple-touch-icon.png",
+      "sha256": "96cfb98c6edec78c905c512efad15355f118e92931310c71460faacb31b14afa",
+      "bytes": 39785,
+      "width": 180,
+      "height": 180,
+      "mode": "RGB",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    },
+    {
+      "path": "assets/favicon-64.png",
+      "sha256": "11a4bd175ff66998e1ac528d663c2ee2f54cea9c136ed8dbb97ba1d584fd7c25",
+      "bytes": 6438,
+      "width": 64,
+      "height": 64,
+      "mode": "RGB",
+      "provenance": "newly authored PWA icon or vector-style artwork"
+    }
+  ]
+}

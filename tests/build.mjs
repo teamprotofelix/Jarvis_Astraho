@@ -35,3 +35,10 @@ console.log(`Expedition art OK: ${expeditionArt.assets.length} selected WebP, ${
 const storyArt=JSON.parse(read('assets/story-art-manifest.json'));assert.equal(storyArt.assets.length,27);
 for(const art of storyArt.assets){const b=readFileSync(new URL(art.path,root)),info=webpInfo(b);assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.ok(b.length<=512000,art.path);assert.equal(info.width,art.width);assert.equal(info.height,art.height);}
 console.log(`Story art OK: ${storyArt.assets.length} WebP, ${storyArt.assets.reduce((n,a)=>n+a.bytes,0)} bytes; full scenes only on demand.`);
+
+const pwaArt=JSON.parse(read('assets/pwa-art-manifest.json'));assert.equal(pwaArt.assets.length,5);
+for(const art of pwaArt.assets){const b=readFileSync(new URL(art.path,root));assert.equal(b.length,art.bytes);assert.equal(createHash('sha256').update(b).digest('hex'),art.sha256,art.path);assert.equal(b.toString('hex',0,8),'89504e470d0a1a0a');assert.equal(b.readUInt32BE(16),art.width);assert.equal(b.readUInt32BE(20),art.height);}
+assert.equal(pwa.theme_color,pwa.background_color);assert.ok(html.includes(`name="theme-color" content="${pwa.theme_color}"`));
+for(const icon of pwa.icons){assert.equal(icon.type,'image/png');assert.ok(['any','maskable'].includes(icon.purpose));const b=readFileSync(new URL(icon.src,root));assert.equal(`${b.readUInt32BE(16)}x${b.readUInt32BE(20)}`,icon.sizes);}
+assert.ok(html.includes('rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png"'));assert.ok(html.includes('sizes="64x64" href="./assets/favicon-64.png"'));assert.ok(!context.files.some(p=>p.includes('icon-master')||p.includes('story/scenes')));
+console.log(`PWA identity OK: ${pwaArt.assets.length} exact delivery PNGs, ${pwaArt.assets.reduce((n,a)=>n+a.bytes,0)} bytes; colors and purposes consistent.`);

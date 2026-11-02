@@ -19,15 +19,17 @@ const $=s=>document.querySelector(s);
 const roomMap=new Map(modules.map(m=>[m.id,m]));
 const sim=createCrewSimulation();
 const campaign=createCampaign();
-const storyPanel=createStoryPanel($('#story-panel'),{open:openStory,review:reviewStory});
+const storyPanel=createStoryPanel($('#story-panel'),{open:openStory,review:reviewStory,onChange:updateMap});
 const constructionPanel=createConstructionPanel($('#construction-panel'),projectCommand);
 const missionBoard=createMissionBoard($('#mission-board'),missionCommand);
 const expeditionView=createExpeditionView($('#expedition-root'),expeditionAction);
 const living=createLivingView($('#living-root'));
 let quality='high',lastFlightEvent='';
-const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let loading=true,paused=reduced,blurred=false,last=0,lastUI=0,activeView='map',returnFocus=null,selected='e',following=false,zoom=1,speed=1,currentRoom=null,talkIndex=0,flightVisible=false;
+const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');let reduced=motionPreference.matches;
+let loading=true,paused=reduced,blurred=false,last=0,lastUI=0,activeView='map',returnFocus=null,selected='e',following=false,zoom=1,speed=1,currentRoom=null,talkIndex=0,flightVisible=false,frameId=0;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function setText(selector,value){const el=$(selector);if(el.textContent!==value)el.textContent=value;}
+function setHTML(selector,value){const el=$(selector);if(el.innerHTML!==value)el.innerHTML=value;}
 const time=s=>`${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
 const member=()=>sim.members.find(m=>m.data.id===selected);
 const sprite=(id,extra='')=>`<span aria-hidden="true" class="sprite-sheet ${extra}" style="background-image:url('${spriteSrc(id)}')"></span>`;
@@ -40,24 +42,20 @@ function buildMap(){
  $('#statuses').innerHTML=[['세계수 공명','안정'],['항로 분석','관측 중'],['생활 환경','정상']].map(([label,value])=>`<div class="status-row"><div><span>${label}</span><b>${value}</b></div><div class="status-track"><i style="width:96%;background:var(--mint)"></i></div></div>`).join('');
 }
 function updateMap(){
- $('#story-notification').textContent=`새 이야기 ${campaign.story.pending.length}`;if(activeView==='story')storyPanel.render(campaign.story);
+ setText('#story-notification',`새 이야기 ${campaign.story.pending.length}`);if(activeView==='story')storyPanel.render(campaign.story);
  sim.setFacilities(campaign.construction.levels,campaign.construction.active||campaign.research.active);updateHeroUpgrades($('#hero-upgrades'),campaign.construction.levels,campaign.construction.active);if(activeView==='research')constructionPanel.render(campaign.inventory,campaign.research,campaign.construction,{conflicted:!loading&&persistence.conflicted});
  if(!loading){updateMissionUI();expeditionView.render(campaign.expedition,campaign.rewardLedger,{quality,motion:!paused&&!blurred&&!document.hidden&&!reduced});expeditionView.pause(paused||blurred||document.hidden||!$('#dialog-backdrop').hidden);}
  living.render(sim,{levels:campaign.construction.levels,pending:campaign.construction.active,selected,zoom,motion:!paused&&!blurred&&!document.hidden&&!reduced,following});
- $('#living-selection').textContent=member().data.name+' · '+sim.getDisplayRoom(member())+' · '+sim.getActivity(member());
- for(const m of sim.members){const el=$(`.crew-sprite[data-person="${m.data.id}"]`);const index=crew.indexOf(m.data),idle=m.phase!=='이동';
-  // Spread co-located residents without changing navigation coordinates.
-  const occupants=sim.getOccupants(m.room),slot=occupants.indexOf(m),offset=idle?(slot-(occupants.length-1)/2)*Math.min(48,135/Math.max(1,occupants.length-1)):0;
-  el.style.left=(m.pos.x+offset)/12+'%';el.style.top=m.pos.y/6.2+'%';el.style.zIndex=String(Math.round(m.pos.y));
-  el.classList.toggle('selected',m.data.id===selected);el.classList.toggle('walking',!idle&&!paused&&!blurred);
-  const frame=idle||paused||blurred||reduced?0:1+(Math.floor(sim.elapsed*7)%2);
-  el.firstElementChild.style.backgroundPosition=`${frame*50}% ${m.direction*100/3}%`;if(activeView==='map')renderCrewAction(el,m,sim.elapsed,{motion:!paused&&!blurred&&!document.hidden&&!reduced,quality});
+ setText('#ship-clock',`SIM +${time(sim.elapsed)}`);const current=member();
+ if(activeView==='living'){setText('#living-selection',current.data.name+' · '+sim.getDisplayRoom(current)+' · '+sim.getActivity(current));renderLifeInfo(current);}
+ if(activeView!=='map')return;
+ for(const m of sim.members){const el=$(`.crew-sprite[data-person="${m.data.id}"]`),idle=m.phase!=='이동',occupants=sim.getOccupants(m.room),slot=occupants.indexOf(m),offset=idle?(slot-(occupants.length-1)/2)*Math.min(48,135/Math.max(1,occupants.length-1)):0;
+  el.style.left=(m.pos.x+offset)/12+'%';el.style.top=m.pos.y/6.2+'%';el.style.zIndex=String(Math.round(m.pos.y));el.classList.toggle('selected',m.data.id===selected);el.classList.toggle('walking',!idle&&!paused&&!blurred);
+  const frame=idle||paused||blurred||reduced?0:1+Math.floor(sim.elapsed*7)%2;el.firstElementChild.style.backgroundPosition=`${frame*50}% ${m.direction*100/3}%`;renderCrewAction(el,m,sim.elapsed,{motion:!paused&&!blurred&&!document.hidden&&!reduced,quality});
  }
- for(const m of modules){const n=sim.getOccupants(m.id).length;$(`[data-count="${m.id}"]`).textContent=n?`${n}명 활동`:'휴식 공간';}
- $('#ship-clock').textContent=`SIM +${time(sim.elapsed)}`;
- const m=member();$('#person-location').textContent=`${sim.getDisplayRoom(m)} · ${sim.getActivity(m)}${m.queued?' · 다음: '+roomMap.get(m.queued).name:''}`;
- $('#life-feed').innerHTML=sim.events.slice(0,5).map(e=>`<li><time>${time(e.time)}</time> ${esc(e.text)}</li>`).join('')||'<li>각자의 하루가 시작됩니다.</li>';
- renderLifeInfo(m);if(following&&activeView==='map')centerPerson();
+ for(const room of modules){const n=sim.getOccupants(room.id).length;setText(`[data-count="${room.id}"]`,n?`${n}명 활동`:'휴식 공간');}
+ setText('#person-location',`${sim.getDisplayRoom(current)} · ${sim.getActivity(current)}${current.queued?' · 다음: '+roomMap.get(current.queued).name:''}`);
+ setHTML('#life-feed',sim.events.slice(0,5).map(e=>`<li><time>${time(e.time)}</time> ${esc(e.text)}</li>`).join('')||'<li>각자의 하루가 시작됩니다.</li>');renderLifeInfo(current);if(following)centerPerson();
 }
 function selectPerson(id){if(!crew.some(p=>p.id===id))return;selected=id;talkIndex=0;const p=member().data;
  $('#observer-title').textContent=p.name;$('#observer-copy').textContent=p.line;$('#person-role').textContent=p.role;$('#portrait').innerHTML=sprite(id);$('#talk-response').textContent='';
@@ -79,12 +77,12 @@ function renderJournals(){const value=$('#journal-filter').value;$('#journal-gri
 for(const m of modules){const option=document.createElement('option');option.value=m.id;option.textContent=m.name;$('#journal-filter').append(option);}
 buildMap();renderJournals();selectPerson('e');
 const flight=createFlight($('#flight-canvas'),$('#flight-ship'),state=>{const eventKey=[state.sector,state.lit,state.shield].join(':');if(!loading&&eventKey!==lastFlightEvent)persistence.schedule();lastFlightEvent=eventKey;const s=landscapes[state.sector];$('#sector-name').textContent=s.name;$('#sector-tag').textContent=s.tag;$('#sector-heading').textContent=s.name;$('#flight-log').textContent=s.log;$('#flight-event').textContent=state.message;$('#mode-label').textContent=state.manual?'MANUAL':'AUTOPILOT';$('#light-count').textContent=String(state.lit).padStart(2,'0');$('#shield-value').textContent=state.shield+'%';$('#distance-value').textContent=Math.floor(state.distance)+' ly';});
-function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;document.body.classList.toggle('motion-stopped',stopped||reduced);$('#living-pause').textContent=paused?'움직임 재개':'움직임 일시정지';expeditionView.pause(stopped);$('#research-pause').textContent=paused?'움직임 재개':'움직임 일시정지';$('#expedition-pause').textContent=paused?'움직임 재개':'움직임 일시정지';flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));last=0;updateMap();}
+function syncPause(){const stopped=loading||paused||blurred||document.hidden||!$('#dialog-backdrop').hidden;document.body.classList.toggle('motion-stopped',stopped||reduced);$('#living-pause').textContent=paused?'움직임 재개':'움직임 일시정지';expeditionView.pause(stopped);$('#research-pause').textContent=paused?'움직임 재개':'움직임 일시정지';$('#expedition-pause').textContent=paused?'움직임 재개':'움직임 일시정지';flight.pause(stopped||activeView!=='voyage'||!flightVisible);$('#motion-toggle').textContent=paused?'움직임 재개':'움직임 일시정지';$('#motion-toggle').setAttribute('aria-pressed',String(paused));setText('#global-pause',paused?'움직임 재개':'움직임 일시정지');$('#global-pause').setAttribute('aria-pressed',String(paused));last=0;updateMap();if(stopped){if(frameId)cancelAnimationFrame(frameId);frameId=0;}else if(!frameId)frameId=requestAnimationFrame(animate);}
 function setManual(value,focus=true){flight.setManual(value);for(const [id,on] of [['auto-btn',!value],['manual-btn',value]]){$('#'+id).classList.toggle('active',on);$('#'+id).setAttribute('aria-pressed',String(on));}$('#manual-pad').hidden=!value;if(focus)$('#flight-wrap').focus();}
-function animate(now){if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){requestAnimationFrame(animate);return;}last=now;
+function animate(now){frameId=0;if(!last)last=now;const dt=Math.min((now-last)/1000,.05);if(now-last<32){frameId=requestAnimationFrame(animate);return;}last=now;
  const running=!loading&&!paused&&!blurred&&!document.hidden&&$('#dialog-backdrop').hidden;
- if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision){campaign.observeCrew(sim.members,sim.revision);persistence.schedule();}if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.snapshot().distance,expeditionView.input(campaign.expedition),{expeditionActive:activeView==='expedition'});if(campaign.revision!==missionRevision)persistence.schedule();}
- if(now-lastUI>160){updateMap();lastUI=now;}requestAnimationFrame(animate);
+ if(running){const missionRevision=campaign.revision;const revision=sim.revision;for(let i=0;i<speed;i++)sim.update(dt);if(sim.revision!==revision){campaign.observeCrew(sim.members,sim.revision);persistence.schedule();}if(activeView==='voyage')flight.advance(dt);campaign.tick(dt,flight.distance,expeditionView.input(campaign.expedition),{expeditionActive:activeView==='expedition'});if(campaign.revision!==missionRevision)persistence.schedule();}
+ if(now-lastUI>160){updateMap();lastUI=now;}frameId=requestAnimationFrame(animate);
 }
 $('#motion-toggle').addEventListener('click',()=>{paused=!paused;syncPause();});
 $('#sim-speed').addEventListener('click',()=>{speed=speed===1?2:speed===2?4:1;$('#sim-speed').textContent=speed+'× 생활';});
@@ -114,9 +112,9 @@ window.addEventListener('keydown',e=>{
 });
 window.addEventListener('keyup',e=>flight.input(e.key,false));
 for(const button of document.querySelectorAll('#manual-pad button')){button.addEventListener('pointerdown',e=>{e.preventDefault();if(paused||blurred)return;button.setPointerCapture(e.pointerId);flight.input(button.dataset.key,true);});for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>flight.input(button.dataset.key,false));}
-window.addEventListener('blur',()=>{expeditionView.clear();blurred=true;syncPause();});window.addEventListener('focus',()=>{blurred=false;syncPause();});document.addEventListener('visibilitychange',syncPause);window.addEventListener('resize',()=>{if(activeView==='voyage')flight.resize();if(activeView==='expedition')expeditionView.resize();});
+window.addEventListener('blur',()=>{expeditionView.clear();blurred=true;syncPause();});window.addEventListener('focus',()=>{blurred=false;syncPause();});document.addEventListener('visibilitychange',syncPause);window.addEventListener('resize',()=>{if(activeView==='voyage')flight.resize();if(activeView==='expedition')expeditionView.resize();updateMap();});
 new IntersectionObserver(entries=>{if(activeView==='voyage'){flightVisible=entries[0].isIntersecting;syncPause();}},{threshold:.05}).observe($('#flight-wrap'));
-setZoom(innerWidth<650?.72:1);syncPause();requestAnimationFrame(animate);
+setZoom(innerWidth<650?.72:1);syncPause();
 // Complete offline readiness is announced only after an atomic precache succeeds.
 if('serviceWorker' in navigator)window.addEventListener('load',async()=>{try{
  const reg=await navigator.serviceWorker.register('./sw.js',{scope:'./'}),show=()=>{$('#update-toast').hidden=false;};
@@ -129,7 +127,7 @@ let runId=createGameState().runId;
 function captureState(){return createGameState({simulation:sim.snapshot(),flight:flight.snapshot(),ui:{selectedCrew:selected,selectedView:activeView,paused,zoom,speed,following,quality},...campaign.snapshot()});}
 function captureSave(){const state=captureState();state.runId=runId;return state;}
 function applyState(state){runId=state.runId;campaign.restore(state);sim.restore(state.simulation);flight.restore(state.flight);paused=state.ui.paused;setQuality(state.ui.quality);speed=state.ui.speed;$('#sim-speed').textContent=speed+'× 생활';selectPerson(state.ui.selectedCrew);setZoom(state.ui.zoom);setFollowing(state.ui.following);activate(state.ui.selectedView);setManual(state.flight.manual,false);last=0;syncPause();}
-const persistence=createPersistence({storage:createIndexedDBStorage(),capture:captureSave,apply:applyState,status:(message,ok)=>{$('#save-status').textContent=message;$('#save-status').dataset.ok=String(ok);}});
+const persistence=createPersistence({storage:createIndexedDBStorage(),capture:captureSave,apply:applyState,status:(message,ok)=>{setText('#save-status',message);$('#save-status').dataset.ok=String(ok);}});
 function downloadSave(source,name='astraho-save.json'){const url=URL.createObjectURL(new Blob([source],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),0);}
 $('#export-save').addEventListener('click',()=>downloadSave(persistence.exportState()));
 $('#export-original').addEventListener('click',()=>downloadSave(persistence.exportOriginal(),'astraho-original-backup.json'));
@@ -142,21 +140,21 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)persistence
 persistence.load().finally(()=>{loading=false;setQuality(quality);syncPause();});
 
 function setQuality(value){quality=value;$('#art-quality').value=value;living.setQuality(value);const image=$('#ark-hero-image');if(value==='high'){image.src='./assets/hero/astraho-exterior-hero.webp';image.hidden=false;}else{image.hidden=true;image.removeAttribute('src');}}
-$('#art-quality').addEventListener('change',event=>{setQuality(event.target.value);persistence.schedule();});
+$('#art-quality').addEventListener('change',event=>{setQuality(event.target.value);updateMap();persistence.schedule();});
 $('#living-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
 $('#living-follow').addEventListener('click',()=>{setFollowing(!following);updateMap();});
 $('.design-previews').addEventListener('toggle',event=>{if(event.target.open)for(const image of event.target.querySelectorAll('[data-preview]'))image.src=image.dataset.preview;});
 $('#living-root').addEventListener('touchstart',()=>setFollowing(false),{passive:true});
 $('#living-root').addEventListener('wheel',()=>setFollowing(false),{passive:true});
 
-function renderLifeInfo(m){const l=m.life,next=m.queued?roomMap.get(m.queued).name:l.task?l.task.label:l.state==='walk'?'목적지 도착 후 활동':'역할·피로에 따라 다음 일과 선택';const html=[['현재 행동',stateLabels[l.state]],['목적지',roomMap.get(m.target).name],['진행 중인 일',l.label+(l.state==='walk'?'':` · ${Math.ceil(l.remaining)}초`)],['곧 할 일',next],['생활 에너지',Math.round(l.energy)+' / 100 (플레이용 지표)']].map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');$('#person-life').innerHTML=html;$('#living-life').innerHTML=html;}
+function renderLifeInfo(m){const l=m.life,next=m.queued?roomMap.get(m.queued).name:l.task?l.task.label:l.state==='walk'?'목적지 도착 후 활동':'역할·피로에 따라 다음 일과 선택';const html=[['현재 행동',stateLabels[l.state]],['목적지',roomMap.get(m.target).name],['진행 중인 일',l.label+(l.state==='walk'?'':` · ${Math.ceil(l.remaining)}초`)],['곧 할 일',next],['생활 에너지',Math.round(l.energy)+' / 100 (플레이용 지표)']].map(([k,v])=>`<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('');if(activeView==='map')setHTML('#person-life',html);if(activeView==='living')setHTML('#living-life',html);}
 $('#living-talk').addEventListener('click',()=>{sim.interact(selected);$('#living-response').textContent=storyGreeting(campaign.story,selected)||conversations[selected][0];updateMap();});
 $('#living-visit').addEventListener('click',()=>{const m=member();roomDialog(m.phase==='이동'?m.target:m.room);});
 
 $('#living-root').addEventListener('keydown',event=>{if(event.key.startsWith('Arrow')&&following)setFollowing(false);});
 
-function updateMissionUI(){const a=campaign.missions.active;$('#voyage-target').textContent=a?`${destination(a.destinationId).name} · ${missionLabels[a.status]} · ${a.status==='traveling'?Math.max(0,a.requiredDistance-(flight.snapshot().distance-a.startDistance)).toFixed(0)+' ly 남음':'신호 패널에서 다음 단계 확인'}`:'탐사 항로를 먼저 선택하세요.';if(activeView==='missions')missionBoard.render(campaign.missions,{distance:flight.snapshot().distance,motion:!paused&&!blurred&&!document.hidden&&!reduced,canLaunch:true,expeditionActive:!!campaign.expedition});$('#mission-pause').textContent=paused?'움직임 재개':'움직임 일시정지';}
-function missionCommand(event){try{if(event.type==='launch'){campaign.launch();persistence.schedule();activate('expedition');$('#exp-wrap').focus({preventScroll:true});return;}campaign.command({...event,distance:flight.snapshot().distance});persistence.schedule();$('#mission-notice').textContent=event.type==='depart'?'항로를 선택했습니다. 실제 비행 거리로 목표에 접근합니다.':'신호 상태를 갱신했습니다.';if(event.type==='depart')activate('voyage');updateMissionUI();}catch(error){$('#mission-notice').textContent=error.message;}}
+function updateMissionUI(){const a=campaign.missions.active;$('#voyage-target').textContent=a?`${destination(a.destinationId).name} · ${missionLabels[a.status]} · ${a.status==='traveling'?Math.max(0,a.requiredDistance-(flight.distance-a.startDistance)).toFixed(0)+' ly 남음':'신호 패널에서 다음 단계 확인'}`:'탐사 항로를 먼저 선택하세요.';if(activeView==='missions')missionBoard.render(campaign.missions,{distance:flight.distance,motion:!paused&&!blurred&&!document.hidden&&!reduced,canLaunch:true,expeditionActive:!!campaign.expedition});$('#mission-pause').textContent=paused?'움직임 재개':'움직임 일시정지';}
+function missionCommand(event){try{if(event.type==='launch'){campaign.launch();persistence.schedule();activate('expedition');$('#exp-wrap').focus({preventScroll:true});return;}campaign.command({...event,distance:flight.distance});persistence.schedule();$('#mission-notice').textContent=event.type==='depart'?'항로를 선택했습니다. 실제 비행 거리로 목표에 접근합니다.':'신호 상태를 갱신했습니다.';if(event.type==='depart')activate('voyage');updateMissionUI();}catch(error){$('#mission-notice').textContent=error.message;}}
 $('#mission-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
 
 function expeditionAction(event){try{if(event.type==='home'){expeditionView.targetHome();return;}if(event.type==='abort'){showDialog('<div class="dialog-content"><h2 id="detail-title">표본을 반납하고 철수할까요?</h2><p>철수하면 가방의 표본을 반납하고 보상 없이 귀환합니다. 보급 소진 시 구조 회수는 채집 수량의 절반을 보존합니다.</p><button type="button" class="gold-btn" id="confirm-abort">철수 확정</button></div>');$('#confirm-abort').addEventListener('click',()=>{campaign.expeditionCommand({type:'abort'});closeDialog();persistence.schedule();updateMap();});return;}
@@ -170,3 +168,6 @@ function openStory(eventId=null){const content=storyDialog(campaign.story,{quali
 function reviewStory(eventId){try{campaign.reviewStory(eventId);$('#story-notice').textContent='실제 진행 조건에 맞는 기록을 검토했습니다.';persistence.schedule();storyPanel.render(campaign.story);updateMap();}catch(error){$('#story-notice').textContent=error.message;}}
 $('#story-notification').addEventListener('click',()=>{activate('story');$('#story-title').focus({preventScroll:true});});
 document.addEventListener('click',event=>{const b=event.target.closest('[data-story-choice]');if(!b)return;try{if(persistence.conflicted)throw Error('다른 탭의 변경을 새로고침한 뒤 선택하세요');campaign.chooseStory({eventId:b.dataset.storyEvent,choiceId:b.dataset.storyChoice,eventSequence:Number(b.dataset.storySequence)});closeDialog();$('#story-notice').textContent='선택과 대화 분기를 아카식에 기록했습니다. 후속 실제 게임 전이에서 새 기록이 이어집니다.';persistence.schedule();updateMap();$('#story-title').focus({preventScroll:true});}catch(error){$('#story-notice').textContent=error.message;}});
+
+$('#global-pause').addEventListener('click',()=>{paused=!paused;syncPause();});
+motionPreference.addEventListener?.('change',event=>{reduced=event.matches;flight.setReducedMotion(reduced);syncPause();});

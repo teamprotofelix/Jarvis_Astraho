@@ -3,7 +3,7 @@ import {FlightModel} from './flight-model.js';
 const rand=n=>{const v=Math.sin(n*127.1+18.12)*43758.5453;return v-Math.floor(v);};
 export function createFlight(canvas,ship,onUpdate){
  const ctx=canvas.getContext('2d',{alpha:true}),model=new FlightModel(),keys=new Set(),images=new Map();let paused=false,w=900,h=440;
- const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
+ let reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches??false;
  const stars=Array.from({length:130},(_,i)=>({x:rand(i*2+4),y:rand(i*2+5),r:.5+rand(i*7)*1.6,s:.1+rand(i*8)*.8}));
  function loadScene(index){if(images.has(index))return;const image=new Image();images.set(index,image);image.onload=draw;image.src=landscapeSrc(index);}
  function cover(image){const ratio=Math.max(w/image.naturalWidth,h/image.naturalHeight),dw=image.naturalWidth*ratio,dh=image.naturalHeight*ratio;ctx.drawImage(image,(w-dw)/2,(h-dh)/2,dw,dh);}
@@ -20,5 +20,5 @@ export function createFlight(canvas,ship,onUpdate){
  function input(key,down){if(down)keys.add(key.toLowerCase());else keys.delete(key.toLowerCase());}
  function advance(dt){if(paused)return;const before=model.sector;model.step(dt,{left:keys.has('arrowleft')||keys.has('a'),right:keys.has('arrowright')||keys.has('d'),up:keys.has('arrowup')||keys.has('w'),down:keys.has('arrowdown')||keys.has('s')});if(before!==model.sector){loadScene(model.sector);loadScene((model.sector+1)%landscapes.length);}draw();report();}
  loadScene(0);resize();report();
- return {resize,advance,input,clear,setManual,snapshot:()=>model.snapshot(),restore(state){clear();model.restore(state);loadScene(model.sector);report();draw();},pause(value){paused=value;if(value)clear();},next(){model.next();loadScene(model.sector);report();draw();},get manual(){return model.manual;},get sector(){return model.sector;}};
+ return {resize,advance,input,clear,setManual,setReducedMotion(value){reduced=!!value;draw();},get distance(){return model.distance;},snapshot:()=>model.snapshot(),restore(state){clear();model.restore(state);loadScene(model.sector);report();draw();},pause(value){paused=value;if(value)clear();},next(){model.next();loadScene(model.sector);report();draw();},get manual(){return model.manual;},get sector(){return model.sector;}};
 }
