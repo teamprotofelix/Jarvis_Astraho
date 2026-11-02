@@ -29,7 +29,7 @@ with sync_playwright() as p:
   assert page.locator('.exp-slot strong').nth(index).inner_text().endswith('✓'),page.locator('#expedition-notice').inner_text()
   print('Collected objective',index+1,flush=True)
  # Pause midway and persist compact expedition deltas.
- page.locator('#expedition-pause').click();savepoint(page);saved=exported(page);assert saved['schemaVersion']==4;assert len(saved['expedition']['collectedIds'])==3
+ page.locator('#expedition-pause').click();savepoint(page);saved=exported(page);assert saved['schemaVersion']==5;assert len(saved['expedition']['collectedIds'])==3
  page.reload();page.wait_for_function("document.querySelector('#save-status').textContent.includes('복원')");restored=exported(page);assert restored['expedition']==saved['expedition'];assert restored['missions']==saved['missions']
  page.locator('#expedition-pause').click();page.locator('[data-exp-action=home]').click();page.clock.run_for(10000)
  page.locator('[data-exp-action=extract]').click();page.clock.run_for(9200);page.locator('#expedition-pause').click();savepoint(page)
